@@ -47,12 +47,11 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         mtkView.delegate = self
         mtkView.preferredFramesPerSecond = 30
         
-        let devices = MTLCopyAllDevices().sorted {
+        guard let device = MTLCopyAllDevices().sorted(by: {
             $0.recommendedMaxWorkingSetSize > $1.recommendedMaxWorkingSetSize
+        }).first else {
+            fatalError("no graphics card!")
         }
-        print(devices)
-        let device = devices.first!
-        print(device.recommendedMaxWorkingSetSize)
         mtkView.device = device
         
         commandQueue = device.makeCommandQueue()
@@ -121,6 +120,11 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     }
 
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        let scale = CGSize(width: size.width / view.drawableSize.width, height: size.height / view.drawableSize.height)
+        cursorPosition.x *= scale.width
+        cursorPosition.y *= scale.height
+        origin.x *= scale.width
+        origin.y *= scale.height
         threadgroupSize = pipeline.threadgroupSizesForDrawableSize(size)
     }
 
@@ -137,5 +141,12 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     override func smartMagnify(with event: NSEvent) {
         zoom.width *= 1.5
         zoom.height *= 1.5
+    }
+    
+    @objc @IBAction func reset(_ sender: Any) {
+        zoom = CGSize(width: 3,
+                      height: 3)
+        origin = .zero
+        cursorPosition = .zero
     }
 }

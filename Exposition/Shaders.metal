@@ -7,10 +7,10 @@ using namespace metal;
 #define complexExtentY 3
 
 /// Convert a point on the screen to a point in the complex plane.
-inline float2 screenToComplex(float x, float y, float width, float height, float2 zoom)
+inline float2 screenToComplex(float2 point, float2 size, float2 zoom)
 {
-    const float scale = max(zoom.x/width, zoom.y/height);
-    return float2((x-width/2)*scale, (y-height/2)*scale);
+    const float scale = max(zoom.x/size.x, zoom.y/size.y);
+    return (point - size/2) * scale;
 }
 
 inline float2 cross(float2 a, float2 b) {
@@ -36,8 +36,8 @@ float4 colorForIterationNewTon(float2 a, float2 c, int maxiters, float escape)
     for (int i = 0; i < maxiters; i++) {
         float2 a1 =  cross(cross(float2(3, 0), a), a);
         float2 a2 = cross(cross(a, a), a);
-        float2 a3 = div(sub(a2, float2(1, 0)), a1);
-        a = sub(a, cross(c, a3));
+        float2 a3 = div(a2 - float2(1, 0), a1);
+        a = a - cross(c, a3);
 
         if (length_squared(a) > escape) {
             float hue = (i+1-log2(log10(length_squared(a))/2))/maxiters*4 * M_PI_F + 3;
@@ -63,11 +63,14 @@ kernel void newtonShader(texture2d<float, access::write> output [[texture(0)]],
     const device float2& origin = parameters[1];
     const device float2& zoom = parameters[2];
     
-    float2 z = screenToComplex(upos.x - origin.x, upos.y - origin.y, width, height, zoom);
-    float2 c = screenToComplex(screenPoint.x,
-                               screenPoint.y,
-                               width,
-                               height,
+    float2 uposf = float2(upos.x, upos.y);
+    float2 size = float2(width, height);
+    
+    float2 z = screenToComplex(uposf - origin,
+                               size,
+                               zoom);
+    float2 c = screenToComplex(screenPoint,
+                               size,
                                zoom);
     
     output.write(float4(colorForIterationNewTon(z, c, 100, 50)), upos);
