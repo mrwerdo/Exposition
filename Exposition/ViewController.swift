@@ -15,7 +15,7 @@ extension NSEvent {
     }
 }
 
-class ViewController: NSViewController, MTKViewDelegate {
+class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDelegate {
     
     var threadgroupSize: ThreadgroupSizes!
     var library: MTLLibrary!
@@ -26,6 +26,16 @@ class ViewController: NSViewController, MTKViewDelegate {
     
     var cursorPosition: CGPoint = .zero
     var isMouseDown: Bool = false
+    var origin: CGPoint = .zero
+    
+    let minimumZoom = CGSize(width: 0.2, height: 0.2)
+    
+    var zoom: CGSize = CGSize(width: 3, height: 3) {
+        didSet {
+            zoom.width = max(minimumZoom.width, zoom.width)
+            zoom.height = max(minimumZoom.height, zoom.height)
+        }
+    }
 
     @IBOutlet weak var mtkView: MTKView!
     
@@ -50,7 +60,7 @@ class ViewController: NSViewController, MTKViewDelegate {
         
         shader = library.makeFunction(name: "newtonShader");
         pipeline = try! device.makeComputePipelineState(function: shader)
-        buffer = device.makeBuffer(length: 2 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined])
+        buffer = device.makeBuffer(length: 6 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined])
         
         threadgroupSize = pipeline.threadgroupSizesForDrawableSize(mtkView.drawableSize)
     }
@@ -93,9 +103,13 @@ class ViewController: NSViewController, MTKViewDelegate {
             encoder.setComputePipelineState(pipeline)
             encoder.setBuffer(self.buffer, offset: 0, index: 0)
             
-            let buf = self.buffer.contents().bindMemory(to: Float32.self, capacity: 2)
+            let buf = self.buffer.contents().bindMemory(to: Float32.self, capacity: 6)
             buf[0] = Float32(self.cursorPosition.x)
             buf[1] = Float32(self.cursorPosition.y)
+            buf[2] = Float32(self.origin.x)
+            buf[3] = Float32(self.origin.y)
+            buf[4] = Float32(self.zoom.width)
+            buf[5] = Float32(self.zoom.height)
             
             encoder.dispatchThreadgroups(threadgroupSize.threadgroupsPerGrid, threadsPerThreadgroup: threadgroupSize.threadsPerThreadgroup)
             encoder.endEncoding()
@@ -110,4 +124,18 @@ class ViewController: NSViewController, MTKViewDelegate {
         threadgroupSize = pipeline.threadgroupSizesForDrawableSize(size)
     }
 
+    override func scrollWheel(with event: NSEvent) {
+        origin = CGPoint(x: origin.x + event.scrollingDeltaX,
+                         y: origin.y + event.scrollingDeltaY)
+    }
+    
+    override func magnify(with event: NSEvent) {
+        zoom.width *= 1 - event.magnification
+        zoom.height *= 1 - event.magnification
+    }
+    
+    override func smartMagnify(with event: NSEvent) {
+        zoom.width *= 1.5
+        zoom.height *= 1.5
+    }
 }

@@ -5,30 +5,29 @@ using namespace metal;
 
 #define complexExtentX 3.5
 #define complexExtentY 3
-#define mandelbrotShiftX 0.2
 
 /// Convert a point on the screen to a point in the complex plane.
-float2 screenToComplex(float x, float y, float width, float height)
+inline float2 screenToComplex(float x, float y, float width, float height, float2 zoom)
 {
-    const float scale = max(complexExtentX/width, complexExtentY/height);
+    const float scale = max(zoom.x/width, zoom.y/height);
     return float2((x-width/2)*scale, (y-height/2)*scale);
 }
 
-float2 cross(float2 a, float2 b) {
+inline float2 cross(float2 a, float2 b) {
     // <a.x, a.y> x <b.x, b.y>
     float real = a.x * b.x - a.y * b.y;
     float imag = a.y * b.x + a.x * b.y;
     return float2(real, imag);
 }
 
-float2 div(float2 a, float2 b) {
+inline float2 div(float2 a, float2 b) {
     float modulus = b.x * b.x + b.y * b.y;
     float real = a.x * b.x + a.y * b.y;
     float imag = a.y * b.x - a.x * b.y;
     return float2(real/modulus, imag/modulus);
 }
 
-float2 sub(float2 l, float2 r) {
+inline float2 sub(float2 l, float2 r) {
     return float2(l.x - r.x, l.y - r.y);
 }
 
@@ -54,18 +53,22 @@ float4 colorForIterationNewTon(float2 a, float2 c, int maxiters, float escape)
 
 kernel void newtonShader(texture2d<float, access::write> output [[texture(0)]],
                         uint2 upos [[thread_position_in_grid]],
-                         const device float2& screenPoint [[buffer(0)]])
+                         const device float2* parameters [[buffer(0)]])
 {
     uint width = output.get_width();
     uint height = output.get_height();
     if (upos.x > width || upos.y > height) return;
     
-    float2 z = screenToComplex(upos.x, upos.y, width, height);
+    const device float2& screenPoint = parameters[0];
+    const device float2& origin = parameters[1];
+    const device float2& zoom = parameters[2];
     
-    float2 c = screenToComplex(screenPoint.x - mandelbrotShiftX*width,
+    float2 z = screenToComplex(upos.x - origin.x, upos.y - origin.y, width, height, zoom);
+    float2 c = screenToComplex(screenPoint.x,
                                screenPoint.y,
                                width,
-                               height);
+                               height,
+                               zoom);
     
     output.write(float4(colorForIterationNewTon(z, c, 100, 50)), upos);
 }
