@@ -10,9 +10,9 @@ import Cocoa
 
 class Window: NSWindow {
     override func mouseDragged(with event: NSEvent) {
-        if event.modifierFlags.contains(.option) {
-            let p = frame.origin
-            self.setFrameOrigin(CGPoint(x: p.x + event.deltaX, y: p.y - event.deltaY))
-        }
+        self.setFrameOrigin(
+            CGPoint(x: frame.origin.x + event.deltaX,
+                    y: frame.origin.y - event.deltaY)
+        )
     }
 }

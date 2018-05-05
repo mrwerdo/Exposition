@@ -24,6 +24,8 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     var pipeline: MTLComputePipelineState!
     var buffer: MTLBuffer!
     
+    var didPickUp: Bool = false
+    
     var cursorPosition: CGPoint = .zero
     var isMouseDown: Bool = false
     var origin: CGPoint = .zero
@@ -65,20 +67,29 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     }
 
     override func mouseDown(with event: NSEvent) {
-        super.mouseDown(with: event)
-        cursorPosition = event.locationIn(mtkView: mtkView)
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        super.mouseUp(with: event)
-        cursorPosition = event.locationIn(mtkView: mtkView)
+        if event.modifierFlags.contains(.option) {
+            didPickUp = true
+            super.mouseDown(with: event)
+        } else {
+            cursorPosition = event.locationIn(mtkView: mtkView)
+        }
     }
     
     override func mouseDragged(with event: NSEvent) {
-        super.mouseDragged(with: event)
-        if !event.modifierFlags.contains(.option) {
+        if didPickUp {
+            super.mouseDragged(with: event)
+        } else {
             cursorPosition = event.locationIn(mtkView: mtkView)
         }
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        if didPickUp {
+            super.mouseUp(with: event)
+        } else {
+            cursorPosition = event.locationIn(mtkView: mtkView)
+        }
+        didPickUp = false
     }
 
     func draw(in view: MTKView) {
