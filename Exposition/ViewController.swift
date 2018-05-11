@@ -100,13 +100,14 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         
         autoreleasepool {
             guard let drawable = mtkView.currentDrawable else {
+                print("currentDrawable nil!")
                 return
             }
             
             guard let buffer = commandQueue.makeCommandBuffer(),
                 let encoder = buffer.makeComputeCommandEncoder()
             else {
-                return
+                return print("buffer or encoder nil!")
             }
             
             encoder.setTexture(drawable.texture, index: 0)
@@ -159,5 +160,13 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
                       height: 3)
         origin = .zero
         cursorPosition = .zero
+    }
+    
+    @objc @IBAction func startCapture(_ sender: Any) {
+        MTLCaptureManager.shared().startCapture(device: mtkView.device!)
+    }
+    
+    @objc @IBAction func endCapture(_ sender: Any) {
+        MTLCaptureManager.shared().stopCapture()
     }
 }

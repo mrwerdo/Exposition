@@ -3,9 +3,6 @@
 
 using namespace metal;
 
-#define complexExtentX 3.5
-#define complexExtentY 3
-
 /// Convert a point on the screen to a point in the complex plane.
 inline float2 screenToComplex(float2 point, float2 size, float2 zoom)
 {
@@ -27,25 +24,76 @@ inline float2 div(float2 a, float2 b) {
     return float2(real/modulus, imag/modulus);
 }
 
+inline float2 sqrt(float2 c) {
+    float r = length(c);
+    return sqrt(r) * (c + r)/length(c + r);
+}
+
 inline float2 sub(float2 l, float2 r) {
     return float2(l.x - r.x, l.y - r.y);
 }
 
-float4 colorForIterationNewTon(float2 a, float2 c, int maxiters, float escape)
-{
-    for (int i = 0; i < maxiters; i++) {
-        float2 a1 =  cross(cross(float2(3, 0), a), a);
-        float2 a2 = cross(cross(a, a), a);
-        float2 a3 = div(a2 - float2(1, 0), a1);
-        a = a - cross(c, a3);
+inline float2 f(float2 z) {
+    float2 sum = z;
+    float2 zn = cross(z, cross(z, z));
+    sum -= zn/6;
+    zn = cross(z, cross(z, zn));
+    sum += zn/120;
+    zn = cross(z, cross(z, zn));
+    sum -= zn/5040;
+    zn = cross(z, cross(z, zn));
+    sum += zn/362880;
+    return zn;
+}
 
-        if (length_squared(a) > escape) {
-            float hue = (i+1-log2(log10(length_squared(a))/2))/maxiters*4 * M_PI_F + 3;
+inline float2 df(float2 z) {
+    float2 sum = float2(1, 0);
+    float2 zn = cross(z, z);
+    sum -= zn/2;
+    zn = cross(z, cross(z, zn));
+    sum += zn/24;
+    zn = cross(z, cross(z, zn));
+    sum -= zn/720;
+    zn = cross(z, cross(z, zn));
+    sum += zn/40320;
+    return zn;
+}
+
+float4 colorForIterationNewTon(float2 z, float2 c, int maxiters, float escape)
+{
+    float2 C = z;
+    for (int i = 0; i < maxiters; i++) {
+        // f(x) = √x
+        // x_n1 = x_n0 - f(x)/f'(x)
+        // f'(x) = 1/(2√x)
+        
+//        float2 q = div(cross(z, z) - 1, 2 * z);
+//        z = z - cross(c, q);
+//        z = z - cross(c, div(cross(z, z) - 1, 2*z));
+        
+//        float2 f_z = sqrt(z);
+//        float2 df_z = div(1, 2*f_z);
+//        z = z - cross(c, div(f_z, df_z));
+        
+//        float2 a1 =  cross(cross(float2(3, 0), z), z);
+//        float2 a2 = cross(cross(z, z), z);
+//        float2 a3 = div(a2 - float2(1, 0), a1);
+//        z = z - cross(c, a3);
+        
+//        {\frac {(1-z^{3}/6)}{(z-z^{2}/2)^{2}}}+c
+        
+//        z = z - cross(c, div(f(z), df(z)));
+//        z = z - div(c, cross(z, z));
+        
+        float2 z2 = cross(c, z + div(C, z));
+        if (length_squared(z - z2) < 0.001) {
+            float hue = (i+1-log2(log10(length_squared(z))/2))/maxiters*4 * M_PI_F + 3;
             return float4((cos(hue)+1)/2,
                           (-cos(hue+M_PI_F/3)+1)/2,
                           (-cos(hue-M_PI_F/3)+1)/2,
                           1);
         }
+        z = z2;
     }
     
     return float4(0, 0, 0, 1);

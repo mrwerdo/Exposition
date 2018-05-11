@@ -609,9 +609,21 @@
                                                 <action selector="toggleToolbarShown:" target="Ady-hI-5gd" id="BXY-wc-z0C"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Reset" keyEquivalent="R" id="1UK-8n-QPP" userLabel="Reset">
+                                        <menuItem title="Reset" keyEquivalent="R" id="1UK-8n-QPP">
                                             <connections>
                                                 <action selector="reset:" target="Ady-hI-5gd" id="KQ8-KX-c8d"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Start Capture" keyEquivalent="s" id="usM-Ga-kV7">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="startCapture:" target="Ady-hI-5gd" id="NbP-pT-afe"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="End Capture" keyEquivalent="e" id="Tof-Zx-BIy">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="endCapture:" target="Ady-hI-5gd" id="aRz-n2-Yik"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
