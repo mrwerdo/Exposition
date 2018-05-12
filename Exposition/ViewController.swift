@@ -65,7 +65,21 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         
         threadgroupSize = pipeline.threadgroupSizesForDrawableSize(mtkView.drawableSize)
     }
-
+    
+    override func viewDidAppear() {
+        NotificationCenter.default.addObserver(self, selector: #selector(visabilityChanged), name: NSWindow.didChangeOcclusionStateNotification, object: nil)
+    }
+    
+    override func viewDidDisappear() {
+        NotificationCenter.default.removeObserver(self, name: NSWindow.didChangeOcclusionStateNotification, object: nil)
+    }
+    
+    @objc func visabilityChanged(_ notification: Notification) {
+        if let window = notification.object as? NSWindow {
+            mtkView.isPaused = !window.isVisible || !window.occlusionState.contains(.visible)
+        }
+    }
+    
     override func mouseDown(with event: NSEvent) {
         if event.modifierFlags.contains(.option) {
             didPickUp = true

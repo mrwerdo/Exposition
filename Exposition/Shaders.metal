@@ -62,7 +62,7 @@ inline float2 cos(float2 x) {
 
 float4 colorForIterationNewTon(float2 z, float2 c, int maxiters, float escape)
 {
-    float2 C = z;
+//    float2 C = z;
     for (int i = 0; i < maxiters; i++) {
         // f(x) = √x
         // x_n1 = x_n0 - f(x)/f'(x)
