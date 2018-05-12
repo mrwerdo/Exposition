@@ -25,16 +25,14 @@ inline float2 div(float2 a, float2 b) {
 }
 
 inline float2 pow(float2 x, int times) {
-    float2 p = float2(1, 0);
-    for (int i = 0; i < times; i++) {
-        p *= x;
-    }
-    return p;
+    float r = pow(length(x), (float)times);
+    float arg = atan2(x.y, x.x);
+    return float2(r * cos(times * arg), r * sin(times * arg));
 }
 
 inline float factorial(int n) {
     float sum = 1;
-    for (int i = 1; i < n; i++) {
+    for (int i = 1; i <= n; i++) {
         sum *= i;
     }
     return sum;
@@ -42,10 +40,10 @@ inline float factorial(int n) {
 
 inline float2 e(float2 x) {
     float2 sum = float2();
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         float2 numerator = pow(x, i);
         float denominator = factorial(i);
-        sum += numerator / denominator;
+        sum += float2(numerator.x / denominator, numerator.y / denominator);
     }
     return sum;
 }
@@ -59,7 +57,7 @@ inline float2 sin(float2 x) {
 inline float2 cos(float2 x) {
     float2 p1 = e(cross(float2(0, 1), x));
     float2 p2 = e(cross(float2(0, 1), -x));
-    return (p1 + p2) / 2;
+    return div((p1 + p2), float2(2, 0));
 }
 
 float4 colorForIterationNewTon(float2 z, float2 c, int maxiters, float escape)
@@ -91,7 +89,6 @@ float4 colorForIterationNewTon(float2 z, float2 c, int maxiters, float escape)
         // Newton's method?
         // z1 = 0.5 * (z + z0/z)
 //        float2 z2 = 0.5 * cross(c, z + div(C, z));
-        
 //        float2 z2 = cross(c,z - div(f(C), df(z)));
         
         float2 z2 = z - cross(c, div(sin(z), cos(z)));
