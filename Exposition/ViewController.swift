@@ -26,7 +26,14 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     
     var didPickUp: Bool = false
     
-    var cursorPosition: CGPoint = .zero
+    var cursorPosition: CGPoint = .zero {
+        didSet {
+            let complexPoint = screenToComplex(point: cursorPosition)
+            coordinates.stringValue = String(format: "%.4f, %.4f",
+                                             complexPoint.x,
+                                             complexPoint.y)
+        }
+    }
     var isMouseDown: Bool = false
     var origin: CGPoint = .zero
     
@@ -39,6 +46,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         }
     }
 
+    @IBOutlet weak var coordinates: NSTextField!
     @IBOutlet weak var mtkView: MTKView!
     
     override func viewDidLoad() {
@@ -182,5 +190,12 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     
     @objc @IBAction func endCapture(_ sender: Any) {
         MTLCaptureManager.shared().stopCapture()
+    }
+    
+    func screenToComplex(point: CGPoint) -> CGPoint {
+        let size = mtkView?.drawableSize ?? .zero
+        let scale = max(zoom.width/size.width, zoom.height/size.height)
+        return CGPoint(x: (point.x - size.width/2) * scale,
+                       y: (point.y - size.height/2) * scale)
     }
 }
