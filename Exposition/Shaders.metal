@@ -24,39 +24,42 @@ inline float2 div(float2 a, float2 b) {
     return float2(real/modulus, imag/modulus);
 }
 
-inline float2 sqrt(float2 c) {
-    float r = length(c);
-    return sqrt(r) * (c + r)/length(c + r);
+inline float2 pow(float2 x, int times) {
+    float2 p = float2(1, 0);
+    for (int i = 0; i < times; i++) {
+        p *= x;
+    }
+    return p;
 }
 
-inline float2 sub(float2 l, float2 r) {
-    return float2(l.x - r.x, l.y - r.y);
+inline float factorial(int n) {
+    float sum = 1;
+    for (int i = 1; i < n; i++) {
+        sum *= i;
+    }
+    return sum;
 }
 
-inline float2 f(float2 z) {
-    float2 sum = z;
-    float2 zn = cross(z, cross(z, z));
-    sum -= zn/6;
-    zn = cross(z, cross(z, zn));
-    sum += zn/120;
-    zn = cross(z, cross(z, zn));
-    sum -= zn/5040;
-    zn = cross(z, cross(z, zn));
-    sum += zn/362880;
-    return zn;
+inline float2 e(float2 x) {
+    float2 sum = float2();
+    for (int i = 0; i < 5; i++) {
+        float2 numerator = pow(x, i);
+        float denominator = factorial(i);
+        sum += numerator / denominator;
+    }
+    return sum;
 }
 
-inline float2 df(float2 z) {
-    float2 sum = float2(1, 0);
-    float2 zn = cross(z, z);
-    sum -= zn/2;
-    zn = cross(z, cross(z, zn));
-    sum += zn/24;
-    zn = cross(z, cross(z, zn));
-    sum -= zn/720;
-    zn = cross(z, cross(z, zn));
-    sum += zn/40320;
-    return zn;
+inline float2 sin(float2 x) {
+    float2 p1 = e(cross(float2(0, 1), x));
+    float2 p2 = e(cross(float2(0, 1), -x));
+    return div((p1 - p2), float2(0, 2));
+}
+
+inline float2 cos(float2 x) {
+    float2 p1 = e(cross(float2(0, 1), x));
+    float2 p2 = e(cross(float2(0, 1), -x));
+    return (p1 + p2) / 2;
 }
 
 float4 colorForIterationNewTon(float2 z, float2 c, int maxiters, float escape)
@@ -85,8 +88,14 @@ float4 colorForIterationNewTon(float2 z, float2 c, int maxiters, float escape)
 //        z = z - cross(c, div(f(z), df(z)));
 //        z = z - div(c, cross(z, z));
         
-        float2 z2 = cross(c, z + div(C, z));
-        if (length_squared(z - z2) < 0.001) {
+        // Newton's method?
+        // z1 = 0.5 * (z + z0/z)
+//        float2 z2 = 0.5 * cross(c, z + div(C, z));
+        
+//        float2 z2 = cross(c,z - div(f(C), df(z)));
+        
+        float2 z2 = z - cross(c, div(sin(z), cos(z)));
+        if (length(z2 - z) < 0.1) {
             float hue = (i+1-log2(log10(length_squared(z))/2))/maxiters*4 * M_PI_F + 3;
             return float4((cos(hue)+1)/2,
                           (-cos(hue+M_PI_F/3)+1)/2,
