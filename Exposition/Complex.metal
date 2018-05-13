@@ -38,7 +38,7 @@ public:
     ComplexOp(-, cpx o) {
         return z - o.z;
     }
-
+    
     ComplexOp(*, cpx o) {
         return Complex(z.x * o.z.x - z.y * o.z.y,
                        z.y * o.z.x + z.x * o.z.y);
@@ -49,6 +49,22 @@ public:
         float real = z.x * o.z.x + z.y * o.z.y;
         float imag = z.y * o.z.x - z.x * o.z.y;
         return Complex(real/modulus, imag/modulus);
+    }
+    
+    ComplexOp(+, float o) {
+        return z + o;
+    }
+    
+    ComplexOp(-, float o) {
+        return z - o;
+    }
+    
+    ComplexOp(*, float o) {
+        return *this * Complex(o, 0);
+    }
+    
+    ComplexOp(/, float o) {
+        return *this / Complex(o, 0);
     }
     
     ComplexOp(^, float n) {
@@ -70,31 +86,41 @@ public:
     }
 };
 
-inline float factorial(int n) {
-    float sum = 1;
-    for (int i = 1; i <= n; i++) {
-        sum *= i;
-    }
-    return sum;
+inline Complex operator * (float lhs, Complex rhs) {
+    return rhs * Complex(lhs, 0);
 }
 
-inline Complex e(Complex x) {
-    Complex sum;
-    for (int i = 0; i < 6; i++) {
-        Complex numerator = x ^ i;
-        float denominator = factorial(i);
+inline Complex operator / (float lhs, Complex rhs) {
+    return Complex(lhs, 0) / rhs;
+}
+
+inline Complex operator + (float lhs, Complex rhs) {
+    return Complex(lhs, 0) + rhs;
+}
+
+inline Complex operator - (float lhs, Complex rhs) {
+    return Complex(lhs, 0) - rhs;
+}
+
+inline Complex e(const thread Complex& x) {
+    Complex numerator = x;
+    float denominator = 1;
+    Complex sum = Complex(1, 0);
+    for (int i = 2; i <= 6; i++) {
         sum = sum + Complex(numerator.x() / denominator, numerator.y() / denominator);
+        numerator = numerator * x;
+        denominator = denominator * i;
     }
     return sum;
 }
 
-inline Complex sin(Complex x) {
+inline Complex sin(const thread Complex& x) {
     Complex p1 = e(Complex(0, 1) * x);
     Complex p2 = e(Complex(0, 1) * -x);
     return (p1 - p2) / Complex(0, 2);
 }
 
-inline Complex cos(Complex x) {
+inline Complex cos(const thread Complex& x) {
     Complex p1 = e(Complex(0, 1) * x);
     Complex p2 = e(Complex(0, 1) * -x);
     return (p1 + p2) / Complex(2, 0);

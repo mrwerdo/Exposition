@@ -713,11 +713,11 @@
             </objects>
             <point key="canvasLocation" x="75" y="250"/>
         </scene>
-        <!--View Controller-->
+        <!--Next View Controller Responder-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Exposition" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl" customClass="MTKView">
+                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl" customClass="MetalView" customModule="Exposition" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -735,6 +735,9 @@
                             <constraint firstAttribute="bottom" secondItem="c4c-Nk-HuJ" secondAttribute="bottom" constant="20" id="bXU-RV-pe7"/>
                             <constraint firstItem="c4c-Nk-HuJ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="udL-Ob-6zE"/>
                         </constraints>
+                        <connections>
+                            <outlet property="nextViewControllerResponder" destination="XfG-lQ-9wD" id="UqU-Y8-Lcg"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="coordinates" destination="c4c-Nk-HuJ" id="TzI-eG-e6c"/>

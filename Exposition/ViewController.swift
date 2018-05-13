@@ -15,14 +15,81 @@ extension NSEvent {
     }
 }
 
+class MetalView: MTKView {
+    @IBOutlet weak var nextViewControllerResponder: NSResponder?
+    
+    override var acceptsFirstResponder: Bool {
+        return true
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        nextViewControllerResponder?.keyDown(with: event)
+    }
+    
+    override func keyUp(with event: NSEvent) {
+        nextViewControllerResponder?.keyUp(with: event)
+    }
+}
+
 class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDelegate {
     
-    var threadgroupSize: ThreadgroupSizes!
+    class Shader {
+        var function: MTLFunction
+        var pipeline: MTLComputePipelineState
+        private var threadgroupSize: ThreadgroupSizes? = nil
+        
+        init(function: MTLFunction, pipeline: MTLComputePipelineState) {
+            self.function = function
+            self.pipeline = pipeline
+        }
+        
+        func threadgroupSize(_ drawableSize: CGSize) -> ThreadgroupSizes {
+            if let t = threadgroupSize {
+                return t
+            }
+            threadgroupSize = pipeline.threadgroupSizesForDrawableSize(drawableSize)
+            return threadgroupSize!
+        }
+        
+        static func shaderIncanation(library: MTLLibrary, use_escape_iteration: Bool) -> Shader {
+            let v = MTLFunctionConstantValues()
+            var value = use_escape_iteration
+            v.setConstantValue(&value, type: .bool, index: 0)
+            print(value)
+            let function = try! library.makeFunction(name: "newtonShader", constantValues: v)
+            let pipeline = try! library.device.makeComputePipelineState(function: function)
+            function.label = function.name + "\(value)"
+            return Shader(function: function, pipeline: pipeline)
+        }
+        
+        static func makeShaders(library: MTLLibrary) -> [Shader] {
+            return [
+                shaderIncanation(library: library, use_escape_iteration: true),
+                shaderIncanation(library: library, use_escape_iteration: false)
+            ]
+        }
+    }
+    
     var library: MTLLibrary!
     var commandQueue: MTLCommandQueue!
-    var shader: MTLFunction!
-    var pipeline: MTLComputePipelineState!
     var buffer: MTLBuffer!
+    var shaders: [Shader] = []
+    var shaderIndex: Int = 0
+    var shader: Shader {
+        return shaders[shaderIndex]
+    }
+    
+    override var acceptsFirstResponder: Bool {
+        return true
+    }
+    
+    override func keyUp(with event: NSEvent) {
+        shaderIndex = (shaderIndex + 1) % 2
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        
+    }
     
     var didPickUp: Bool = false
     
@@ -65,17 +132,18 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         mtkView.device = device
         
         commandQueue = device.makeCommandQueue()
-        library = device.makeDefaultLibrary()
         
-        shader = library.makeFunction(name: "newtonShader");
-        pipeline = try! device.makeComputePipelineState(function: shader)
+        library = device.makeDefaultLibrary()
         buffer = device.makeBuffer(length: 6 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined])
         
-        threadgroupSize = pipeline.threadgroupSizesForDrawableSize(mtkView.drawableSize)
+        shaders = Shader.makeShaders(library: library)
+        
+        print(shaders.map { $0.function.label })
     }
     
     override func viewDidAppear() {
         NotificationCenter.default.addObserver(self, selector: #selector(visabilityChanged), name: NSWindow.didChangeOcclusionStateNotification, object: nil)
+        self.becomeFirstResponder()
     }
     
     override func viewDidDisappear() {
@@ -116,7 +184,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
 
     func draw(in view: MTKView) {
         
-        if threadgroupSize.hasZeroDimension {
+        if shader.threadgroupSize(mtkView.drawableSize).hasZeroDimension {
             return
         }
         
@@ -133,7 +201,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             }
             
             encoder.setTexture(drawable.texture, index: 0)
-            encoder.setComputePipelineState(pipeline)
+            encoder.setComputePipelineState(shader.pipeline)
             encoder.setBuffer(self.buffer, offset: 0, index: 0)
             
             let buf = self.buffer.contents().bindMemory(to: Float32.self, capacity: 6)
@@ -144,7 +212,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             buf[4] = Float32(self.zoom.width)
             buf[5] = Float32(self.zoom.height)
             
-            encoder.dispatchThreadgroups(threadgroupSize.threadgroupsPerGrid, threadsPerThreadgroup: threadgroupSize.threadsPerThreadgroup)
+            encoder.dispatchThreadgroups(shader.threadgroupSize(mtkView.drawableSize).threadgroupsPerGrid, threadsPerThreadgroup: shader.threadgroupSize(mtkView.drawableSize).threadsPerThreadgroup)
             encoder.endEncoding()
             
             buffer.present(drawable)
@@ -152,14 +220,14 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             buffer.waitUntilCompleted()
         }
     }
-
+    
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         let scale = CGSize(width: size.width / view.drawableSize.width, height: size.height / view.drawableSize.height)
         cursorPosition.x *= scale.width
         cursorPosition.y *= scale.height
         origin.x *= scale.width
         origin.y *= scale.height
-        threadgroupSize = pipeline.threadgroupSizesForDrawableSize(size)
+        _ = shader.threadgroupSize(size)
     }
 
     override func scrollWheel(with event: NSEvent) {
