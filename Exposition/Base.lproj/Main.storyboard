@@ -626,6 +626,13 @@
                                                 <action selector="endCapture:" target="Ady-hI-5gd" id="aRz-n2-Yik"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Show Cursor" id="7e6-9j-rit">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="shouldShowCursor:" target="Ady-hI-5gd" id="eJz-94-NZd"/>
+                                                <binding destination="Ab8-7p-rMQ" name="value" keyPath="values.shouldShowCursor" id="CqV-s8-wLt"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
                                         <menuItem title="Show Sidebar" keyEquivalent="s" id="kIP-vf-haE">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
@@ -688,6 +695,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Exposition" customModuleProvider="target"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController representsSharedInstance="YES" id="Ab8-7p-rMQ"/>
             </objects>
             <point key="canvasLocation" x="95" y="-65"/>
         </scene>
@@ -729,6 +737,11 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ea3-Z1-zof">
+                                <rect key="frame" x="230" y="170" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" image="NSAddTemplate" id="Sp9-Yg-5fj"/>
+                            </imageView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="c4c-Nk-HuJ" secondAttribute="trailing" constant="20" id="5Dj-yv-e2n"/>
@@ -738,13 +751,16 @@
                     </view>
                     <connections>
                         <outlet property="coordinates" destination="c4c-Nk-HuJ" id="TzI-eG-e6c"/>
+                        <outlet property="cursorImage" destination="ea3-Z1-zof" id="OlP-PT-2XO"/>
                         <outlet property="mtkView" destination="m2S-Jp-Qdl" id="L3h-7P-PTn"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <userDefaultsController representsSharedInstance="YES" id="Ab8-7p-rMQ"/>
             </objects>
             <point key="canvasLocation" x="75" y="741"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="NSAddTemplate" width="11" height="11"/>
+    </resources>
 </document>

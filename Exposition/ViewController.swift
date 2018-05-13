@@ -16,6 +16,13 @@ extension NSEvent {
 }
 
 class MetalView: MTKView {
+    
+    var cursor: NSCursor = NSCursor.crosshair
+    
+    override func resetCursorRects() {
+        addCursorRect(bounds, cursor: cursor)
+    }
+    
     override var acceptsFirstResponder: Bool {
         return true
     }
@@ -96,6 +103,11 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     }
     var isMouseDown: Bool = false
     var origin: CGPoint = .zero
+    var cursor: NSCursor!
+    
+    var shouldShowCursor: Bool {
+        return UserDefaults.standard.bool(forKey: "shouldShowCursor")
+    }
     
     let minimumZoom = CGSize(width: 0.2, height: 0.2)
     
@@ -108,10 +120,18 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
 
     @IBOutlet weak var coordinates: NSTextField!
     @IBOutlet weak var mtkView: MTKView!
+    @IBOutlet weak var cursorImage: NSImageView!
+    
+    @IBAction func shouldShowCursor(_ sender: Any?) {
+        updateCursor()
+        cursorImage.isHidden = shouldShowCursor
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        cursorImage.image = NSCursor.crosshair.image
+        cursorImage.isHidden = shouldShowCursor
+        
         mtkView.autoResizeDrawable = true
         mtkView.framebufferOnly = false
         mtkView.delegate = self
@@ -152,6 +172,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             super.mouseDown(with: event)
         } else {
             cursorPosition = event.locationIn(mtkView: mtkView)
+            cursorImage.isHidden = true
         }
     }
     
@@ -160,6 +181,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             super.mouseDragged(with: event)
         } else {
             cursorPosition = event.locationIn(mtkView: mtkView)
+            cursorImage.isHidden = true
         }
     }
 
@@ -168,10 +190,22 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             super.mouseUp(with: event)
         } else {
             cursorPosition = event.locationIn(mtkView: mtkView)
+            updateCursor()
         }
         didPickUp = false
     }
 
+    func updateCursor() {
+        let s = cursorImage.frame.size
+        cursorImage.setFrameOrigin(
+            CGPoint(x: cursorPosition.x/2 - s.width/2,
+                    y: cursorPosition.y/2 - s.height/2)
+        )
+        if (shouldShowCursor) {
+            cursorImage.isHidden = false
+        }
+    }
+    
     func draw(in view: MTKView) {
         
         if shader.threadgroupSize(mtkView.drawableSize).hasZeroDimension {
