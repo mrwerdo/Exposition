@@ -274,6 +274,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
                       height: 3)
         origin = .zero
         cursorPosition = .zero
+        updateCursor()
     }
     
     @objc @IBAction func startCapture(_ sender: Any) {
