@@ -16,18 +16,54 @@ extension NSEvent {
 }
 
 class MetalView: MTKView {
-    @IBOutlet weak var nextViewControllerResponder: NSResponder?
+    @IBOutlet weak var nextViewControllerResponder: NSResponder? {
+        willSet {
+            if let vc = nextViewControllerResponder {
+                let nextResp = vc.nextResponder
+                super.nextResponder = nextResp
+                nextViewControllerResponder?.nextResponder = nil
+            }
+        }
+        
+        didSet {
+            if let vc = nextViewControllerResponder {
+                let nextResp = self.nextResponder
+                super.nextResponder = vc
+                if nextResp != vc {
+                    vc.nextResponder = nextResp
+                } else {
+                    print("tried setting view controller as it's own next responder")
+                }
+            }
+        }
+    }
     
     override var acceptsFirstResponder: Bool {
+        print(#function, super.acceptsFirstResponder)
         return true
     }
     
-    override func keyDown(with event: NSEvent) {
-        nextViewControllerResponder?.keyDown(with: event)
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        print(#function, self.nextResponder)
     }
     
-    override func keyUp(with event: NSEvent) {
-        nextViewControllerResponder?.keyUp(with: event)
+    override func viewDidMoveToWindow() {
+        print(#function, self.nextResponder)
+    }
+    
+    override var nextResponder: NSResponder? {
+        get {
+            return super.nextResponder
+        }
+        set {
+            if let vc = nextViewControllerResponder {
+                vc.nextResponder = newValue
+            } else {
+                super.nextResponder = newValue
+            }
+            print(#function, newValue)
+        }
     }
 }
 
@@ -37,6 +73,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         var function: MTLFunction
         var pipeline: MTLComputePipelineState
         private var threadgroupSize: ThreadgroupSizes? = nil
+        private var size: CGSize? = nil
         
         init(function: MTLFunction, pipeline: MTLComputePipelineState) {
             self.function = function
@@ -45,9 +82,12 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         
         func threadgroupSize(_ drawableSize: CGSize) -> ThreadgroupSizes {
             if let t = threadgroupSize {
-                return t
+                if drawableSize == size {
+                    return t
+                }
             }
             threadgroupSize = pipeline.threadgroupSizesForDrawableSize(drawableSize)
+            size = drawableSize
             return threadgroupSize!
         }
         
@@ -55,7 +95,6 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             let v = MTLFunctionConstantValues()
             var value = use_escape_iteration
             v.setConstantValue(&value, type: .bool, index: 0)
-            print(value)
             let function = try! library.makeFunction(name: "newtonShader", constantValues: v)
             let pipeline = try! library.device.makeComputePipelineState(function: function)
             function.label = function.name + "\(value)"
@@ -137,13 +176,11 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         buffer = device.makeBuffer(length: 6 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined])
         
         shaders = Shader.makeShaders(library: library)
-        
-        print(shaders.map { $0.function.label })
     }
     
     override func viewDidAppear() {
         NotificationCenter.default.addObserver(self, selector: #selector(visabilityChanged), name: NSWindow.didChangeOcclusionStateNotification, object: nil)
-        self.becomeFirstResponder()
+        print(#function, self, self.nextResponder, view, view.nextResponder)
     }
     
     override func viewDidDisappear() {

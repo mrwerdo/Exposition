@@ -23,19 +23,22 @@ inline float4 colorForIterationNewton(Complex z, Complex c, int i, int maxiters,
                   1);
 }
 
-inline Complex function(Complex z, Complex c) {
-    return z - c * sin(z)/cos(z);
+inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
+//    return z - c * sin(z)/cos(z);
+    return z - c * (z * z * z - Complex(1, 0))/(Complex(3, 0) * z * z);
+//    return z - Complex(0.5, 0) * c * (z + C/z);
+//    return z - c * cos(z)/(-sin(z));
 }
 
 float4 iterate(Complex Z, Complex C, int maxiters, float escape) {
     Complex c = C;
     Complex z = Z;
     for (int i = 0; i < maxiters; i++) {
-        Complex z2 = function(z, c);
+        Complex z2 = function(z, c, Z, C);
         if (use_escape_iteration) {
-            if (z2.length_squared() > escape) return colorForIterationNewton(z, c, i, maxiters, escape);
+            if (z2.length_squared() > escape) return colorForIterationNewton(z2, c, i, maxiters, escape);
         } else {
-            if ((z2 - z).length() < 0.001) return colorForIterationNewton(z, c, i, maxiters, escape);
+            if ((z2 - z).length() < 0.001) return colorForIterationNewton(z2, c, i, maxiters, escape);
         }
         z = z2;
     }
