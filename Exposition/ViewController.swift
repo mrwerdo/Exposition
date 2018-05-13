@@ -16,54 +16,8 @@ extension NSEvent {
 }
 
 class MetalView: MTKView {
-    @IBOutlet weak var nextViewControllerResponder: NSResponder? {
-        willSet {
-            if let vc = nextViewControllerResponder {
-                let nextResp = vc.nextResponder
-                super.nextResponder = nextResp
-                nextViewControllerResponder?.nextResponder = nil
-            }
-        }
-        
-        didSet {
-            if let vc = nextViewControllerResponder {
-                let nextResp = self.nextResponder
-                super.nextResponder = vc
-                if nextResp != vc {
-                    vc.nextResponder = nextResp
-                } else {
-                    print("tried setting view controller as it's own next responder")
-                }
-            }
-        }
-    }
-    
     override var acceptsFirstResponder: Bool {
-        print(#function, super.acceptsFirstResponder)
         return true
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        print(#function, self.nextResponder)
-    }
-    
-    override func viewDidMoveToWindow() {
-        print(#function, self.nextResponder)
-    }
-    
-    override var nextResponder: NSResponder? {
-        get {
-            return super.nextResponder
-        }
-        set {
-            if let vc = nextViewControllerResponder {
-                vc.nextResponder = newValue
-            } else {
-                super.nextResponder = newValue
-            }
-            print(#function, newValue)
-        }
     }
 }
 
@@ -180,7 +134,6 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     
     override func viewDidAppear() {
         NotificationCenter.default.addObserver(self, selector: #selector(visabilityChanged), name: NSWindow.didChangeOcclusionStateNotification, object: nil)
-        print(#function, self, self.nextResponder, view, view.nextResponder)
     }
     
     override func viewDidDisappear() {
