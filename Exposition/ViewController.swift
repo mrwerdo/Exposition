@@ -28,7 +28,18 @@ class MetalView: MTKView {
     }
 }
 
-class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDelegate {
+class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDelegate, NSTouchBarDelegate, NSScrubberDelegate, NSScrubberDataSource {
+    
+    func numberOfItems(for scrubber: NSScrubber) -> Int {
+        return 5
+    }
+    
+    func scrubber(_ scrubber: NSScrubber, viewForItemAt index: Int) -> NSScrubberItemView {
+        let v = NSScrubberTextItemView()
+        v.textField.stringValue = "\(index)"
+        return v
+    }
+    
     
     class Shader {
         var function: MTLFunction
@@ -99,6 +110,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             coordinates.stringValue = String(format: "%.4f, %.4f",
                                              complexPoint.x,
                                              complexPoint.y)
+            touchBarCursorLabel?.stringValue = coordinates.stringValue
         }
     }
     var isMouseDown: Bool = false
@@ -111,10 +123,11 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     
     let minimumZoom = CGSize(width: 0.2, height: 0.2)
     
-    var zoom: CGSize = CGSize(width: 3, height: 3) {
+    @objc var zoom: CGSize = CGSize(width: 3, height: 3) {
         didSet {
             zoom.width = max(minimumZoom.width, zoom.width)
             zoom.height = max(minimumZoom.height, zoom.height)
+            slider?.doubleValue = Double(min(zoom.width, zoom.height))
         }
     }
 
@@ -291,4 +304,54 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         return CGPoint(x: (point.x - size.width/2) * scale,
                        y: (point.y - size.height/2) * scale)
     }
+    
+    override func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.customizationIdentifier = .travelBar
+        touchBar.defaultItemIdentifiers = [.zoomScrubber, .flexibleSpace, .infoLabelItem]
+        touchBar.customizationAllowedItemIdentifiers = [.infoLabelItem]
+        return touchBar
+    }
+    
+    @objc func zoomChanged(_ sender: NSSliderTouchBarItem) {
+        let magnification = CGFloat(sender.slider.doubleValue)
+        zoom.width = magnification
+        zoom.height = magnification
+    }
+    
+    var slider: NSSlider?
+    var touchBarCursorLabel: NSTextField?
+    
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        switch identifier {
+        case NSTouchBarItem.Identifier.infoLabelItem:
+            let cvi = NSCustomTouchBarItem(identifier: .infoLabelItem)
+            cvi.view = NSTextField(labelWithString: "(x, y)")
+            touchBarCursorLabel = cvi.view as? NSTextField
+            return cvi
+        case NSTouchBarItem.Identifier.zoomScrubber:
+            let slider = NSSliderTouchBarItem(identifier: .zoomScrubber)
+            slider.label = "zoom"
+            slider.action = #selector(zoomChanged(_:))
+            slider.target = self
+            slider.slider.minValue = 0.2
+            slider.slider.maxValue = 5
+            self.slider = slider.slider
+            return slider
+        default: return nil
+        }
+    }
 }
+
+extension NSTouchBar.CustomizationIdentifier {
+    static let travelBar = NSTouchBar.CustomizationIdentifier(rawValue: "travelBar")
+}
+
+extension NSTouchBarItem.Identifier {
+    static let infoLabelItem = NSTouchBarItem.Identifier(rawValue: "infoLabelItem")
+    static let zoomScrubber = NSTouchBarItem.Identifier(rawValue: "zoomScrubber")
+}
+
+
+

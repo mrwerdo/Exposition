@@ -25,9 +25,11 @@ inline float4 colorForIterationNewton(Complex z, Complex c, int i, int maxiters,
 
 inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
 //    return z - c * sin(z)/cos(z);
-    return z - c * (z * z * z - Complex(1, 0))/(Complex(3, 0) * z * z);
-//    return z - Complex(0.5, 0) * c * (z + C/z);
+    return z - c * (z * z * z- Complex(1, 0))/(Complex(3, 0) * z * z);
+//    return z - c * (Complex(0.5, 0) * z + 1/z);
 //    return z - c * cos(z)/(-sin(z));
+//    return z - c * (z ^ p)/(Complex(p, 0) * z ** (-2.0/3.0));
+//    return z*z + c;
 }
 
 float4 iterate(Complex Z, Complex C, int maxiters, float escape) {
