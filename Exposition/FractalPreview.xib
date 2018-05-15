@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="FractalPreview" customModule="Exposition" customModuleProvider="target">
+            <connections>
+                <outlet property="box" destination="RaM-Qc-Kod" id="Lxm-rG-hcw"/>
+                <outlet property="image" destination="QkQ-wg-qWd" id="hM9-pw-gEc"/>
+                <outlet property="view" destination="RaM-Qc-Kod" id="vtf-vv-res"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <box boxType="custom" borderType="bezel" cornerRadius="4" title="Box" titlePosition="noTitle" id="RaM-Qc-Kod">
+            <rect key="frame" x="0.0" y="0.0" width="110" height="110"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <view key="contentView" id="b0A-CT-PEo">
+                <rect key="frame" x="1" y="1" width="108" height="108"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QkQ-wg-qWd">
+                        <rect key="frame" x="0.0" y="0.0" width="108" height="108"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="ZLb-aV-uTg"/>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="QkQ-wg-qWd" firstAttribute="leading" secondItem="b0A-CT-PEo" secondAttribute="leading" id="6sP-DF-KpU"/>
+                    <constraint firstAttribute="bottom" secondItem="QkQ-wg-qWd" secondAttribute="bottom" id="9fz-jY-iNF"/>
+                    <constraint firstItem="QkQ-wg-qWd" firstAttribute="top" secondItem="b0A-CT-PEo" secondAttribute="top" id="pxd-Ed-Qve"/>
+                    <constraint firstAttribute="trailing" secondItem="QkQ-wg-qWd" secondAttribute="trailing" id="rRs-L6-wT1"/>
+                </constraints>
+            </view>
+            <color key="borderColor" red="0.83741801979999997" green="0.83743780850000005" blue="0.83742713930000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="fillColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <point key="canvasLocation" x="-139" y="171"/>
+        </box>
+    </objects>
+</document>

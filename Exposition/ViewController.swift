@@ -28,80 +28,15 @@ class MetalView: MTKView {
     }
 }
 
-class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDelegate, NSTouchBarDelegate, NSScrubberDelegate, NSScrubberDataSource {
-    
-    func numberOfItems(for scrubber: NSScrubber) -> Int {
-        return 5
-    }
-    
-    func scrubber(_ scrubber: NSScrubber, viewForItemAt index: Int) -> NSScrubberItemView {
-        let v = NSScrubberTextItemView()
-        v.textField.stringValue = "\(index)"
-        return v
-    }
-    
-    
-    class Shader {
-        var function: MTLFunction
-        var pipeline: MTLComputePipelineState
-        private var threadgroupSize: ThreadgroupSizes? = nil
-        private var size: CGSize? = nil
-        
-        init(function: MTLFunction, pipeline: MTLComputePipelineState) {
-            self.function = function
-            self.pipeline = pipeline
-        }
-        
-        func threadgroupSize(_ drawableSize: CGSize) -> ThreadgroupSizes {
-            if let t = threadgroupSize {
-                if drawableSize == size {
-                    return t
-                }
-            }
-            threadgroupSize = pipeline.threadgroupSizesForDrawableSize(drawableSize)
-            size = drawableSize
-            return threadgroupSize!
-        }
-        
-        static func shaderIncanation(library: MTLLibrary, use_escape_iteration: Bool) -> Shader {
-            let v = MTLFunctionConstantValues()
-            var value = use_escape_iteration
-            v.setConstantValue(&value, type: .bool, index: 0)
-            let function = try! library.makeFunction(name: "newtonShader", constantValues: v)
-            let pipeline = try! library.device.makeComputePipelineState(function: function)
-            function.label = function.name + "\(value)"
-            return Shader(function: function, pipeline: pipeline)
-        }
-        
-        static func makeShaders(library: MTLLibrary) -> [Shader] {
-            return [
-                shaderIncanation(library: library, use_escape_iteration: true),
-                shaderIncanation(library: library, use_escape_iteration: false)
-            ]
-        }
-    }
-    
-    var library: MTLLibrary!
-    var commandQueue: MTLCommandQueue!
-    var buffer: MTLBuffer!
-    var shaders: [Shader] = []
+class ViewController: NSViewController, MTKViewDelegate {
     var shaderIndex: Int = 0
-    var shader: Shader {
-        return shaders[shaderIndex]
+    var shader: Shader? {
+        if let shaders = AppDelegate.shared.metal?.shaders {
+            return shaders[shaderIndex % shaders.count]
+        }
+        return nil
     }
-    
-    override var acceptsFirstResponder: Bool {
-        return true
-    }
-    
-    override func keyUp(with event: NSEvent) {
-        shaderIndex = (shaderIndex + 1) % 2
-    }
-    
-    override func keyDown(with event: NSEvent) {
-        
-    }
-    
+
     var didPickUp: Bool = false
     
     var cursorPosition: CGPoint = .zero {
@@ -113,6 +48,7 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             touchBarCursorLabel?.stringValue = coordinates.stringValue
         }
     }
+    
     var isMouseDown: Bool = false
     var origin: CGPoint = .zero
     var cursor: NSCursor!
@@ -135,10 +71,8 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
     @IBOutlet weak var mtkView: MTKView!
     @IBOutlet weak var cursorImage: NSImageView!
     
-    @IBAction func shouldShowCursor(_ sender: Any?) {
-        updateCursor()
-        cursorImage.isHidden = shouldShowCursor
-    }
+    var slider: NSSlider?
+    var touchBarCursorLabel: NSTextField?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,24 +83,22 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         mtkView.framebufferOnly = false
         mtkView.delegate = self
         mtkView.preferredFramesPerSecond = 30
-        
-        guard let device = MTLCopyAllDevices().sorted(by: {
-            $0.recommendedMaxWorkingSetSize > $1.recommendedMaxWorkingSetSize
-        }).first else {
-            fatalError("no graphics card!")
+        guard let device = AppDelegate.shared.metal?.device else {
+            return
         }
         mtkView.device = device
-        
-        commandQueue = device.makeCommandQueue()
-        
-        library = device.makeDefaultLibrary()
-        buffer = device.makeBuffer(length: 6 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined])
-        
-        shaders = Shader.makeShaders(library: library)
     }
     
     override func viewDidAppear() {
         NotificationCenter.default.addObserver(self, selector: #selector(visabilityChanged), name: NSWindow.didChangeOcclusionStateNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(selectionDidChange(_:)), name: NSNotification.Name("CollectionViewDidSelectIndex"), object: nil)
+    }
+    
+    @objc func selectionDidChange(_ notification: Notification) {
+        if let cv = notification.object as? PreviewViewController {
+            shaderIndex = cv.previewList.selectionIndexes.first ?? 0
+        }
     }
     
     override func viewDidDisappear() {
@@ -179,6 +111,20 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         }
     }
     
+    func draw(in view: MTKView) {
+        shader?.initaliseBuffer(cursor: cursorPosition, zoom: zoom, origin: origin)
+        shader?.draw(in: view)
+    }
+    
+    public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        let scale = CGSize(width: size.width / view.drawableSize.width, height: size.height / view.drawableSize.height)
+        cursorPosition.x *= scale.width
+        cursorPosition.y *= scale.height
+        origin.x *= scale.width
+        origin.y *= scale.height
+        _ = shader?.checkThreadgroupSize(for: size)
+    }
+
     override func mouseDown(with event: NSEvent) {
         if event.modifierFlags.contains(.option) {
             didPickUp = true
@@ -218,55 +164,12 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
             cursorImage.isHidden = false
         }
     }
-    
-    func draw(in view: MTKView) {
-        
-        if shader.threadgroupSize(mtkView.drawableSize).hasZeroDimension {
-            return
-        }
-        
-        autoreleasepool {
-            guard let drawable = mtkView.currentDrawable else {
-                print("currentDrawable nil!")
-                return
-            }
-            
-            guard let buffer = commandQueue.makeCommandBuffer(),
-                let encoder = buffer.makeComputeCommandEncoder()
-            else {
-                return print("buffer or encoder nil!")
-            }
-            
-            encoder.setTexture(drawable.texture, index: 0)
-            encoder.setComputePipelineState(shader.pipeline)
-            encoder.setBuffer(self.buffer, offset: 0, index: 0)
-            
-            let buf = self.buffer.contents().bindMemory(to: Float32.self, capacity: 6)
-            buf[0] = Float32(self.cursorPosition.x)
-            buf[1] = Float32(self.cursorPosition.y)
-            buf[2] = Float32(self.origin.x)
-            buf[3] = Float32(self.origin.y)
-            buf[4] = Float32(self.zoom.width)
-            buf[5] = Float32(self.zoom.height)
-            
-            encoder.dispatchThreadgroups(shader.threadgroupSize(mtkView.drawableSize).threadgroupsPerGrid, threadsPerThreadgroup: shader.threadgroupSize(mtkView.drawableSize).threadsPerThreadgroup)
-            encoder.endEncoding()
-            
-            buffer.present(drawable)
-            buffer.commit()
-            buffer.waitUntilCompleted()
-        }
-    }
-    
-    public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        let scale = CGSize(width: size.width / view.drawableSize.width, height: size.height / view.drawableSize.height)
-        cursorPosition.x *= scale.width
-        cursorPosition.y *= scale.height
-        origin.x *= scale.width
-        origin.y *= scale.height
-        _ = shader.threadgroupSize(size)
-    }
 
+    @IBAction func shouldShowCursor(_ sender: Any?) {
+        updateCursor()
+        cursorImage.isHidden = shouldShowCursor
+    }
+    
     override func scrollWheel(with event: NSEvent) {
         origin = CGPoint(x: origin.x + event.scrollingDeltaX,
                          y: origin.y + event.scrollingDeltaY)
@@ -304,15 +207,11 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         return CGPoint(x: (point.x - size.width/2) * scale,
                        y: (point.y - size.height/2) * scale)
     }
+
     
-    override func makeTouchBar() -> NSTouchBar? {
-        let touchBar = NSTouchBar()
-        touchBar.delegate = self
-        touchBar.customizationIdentifier = .travelBar
-        touchBar.defaultItemIdentifiers = [.zoomScrubber, .flexibleSpace, .infoLabelItem]
-        touchBar.customizationAllowedItemIdentifiers = [.infoLabelItem]
-        return touchBar
-    }
+}
+
+extension ViewController: NSTouchBarDelegate {
     
     @objc func zoomChanged(_ sender: NSSliderTouchBarItem) {
         let magnification = CGFloat(sender.slider.doubleValue)
@@ -320,13 +219,19 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
         zoom.height = magnification
     }
     
-    var slider: NSSlider?
-    var touchBarCursorLabel: NSTextField?
+    override func makeTouchBar() -> NSTouchBar? {
+        let touchBar = NSTouchBar()
+        touchBar.delegate = self
+        touchBar.customizationIdentifier = .expositionParameters
+        touchBar.defaultItemIdentifiers = [.zoomScrubber, .flexibleSpace, .coordinatesLabel]
+        touchBar.customizationAllowedItemIdentifiers = [.coordinatesLabel]
+        return touchBar
+    }
     
     func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         switch identifier {
-        case NSTouchBarItem.Identifier.infoLabelItem:
-            let cvi = NSCustomTouchBarItem(identifier: .infoLabelItem)
+        case NSTouchBarItem.Identifier.coordinatesLabel:
+            let cvi = NSCustomTouchBarItem(identifier: .coordinatesLabel)
             cvi.view = NSTextField(labelWithString: "(x, y)")
             touchBarCursorLabel = cvi.view as? NSTextField
             return cvi
@@ -345,13 +250,16 @@ class ViewController: NSViewController, MTKViewDelegate, NSGestureRecognizerDele
 }
 
 extension NSTouchBar.CustomizationIdentifier {
-    static let travelBar = NSTouchBar.CustomizationIdentifier(rawValue: "travelBar")
+    static let expositionParameters = NSTouchBar.CustomizationIdentifier(rawValue: "expositionParameters")
 }
 
 extension NSTouchBarItem.Identifier {
-    static let infoLabelItem = NSTouchBarItem.Identifier(rawValue: "infoLabelItem")
+    static let coordinatesLabel = NSTouchBarItem.Identifier(rawValue: "coordinatesLabel")
     static let zoomScrubber = NSTouchBarItem.Identifier(rawValue: "zoomScrubber")
 }
 
-
-
+extension ViewController {
+    func selectIndex(_ index: Int) {
+        shaderIndex = index
+    }
+}
