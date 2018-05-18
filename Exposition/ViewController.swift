@@ -70,6 +70,7 @@ class ViewController: NSViewController, MTKViewDelegate {
     @IBOutlet weak var coordinates: NSTextField!
     @IBOutlet weak var mtkView: MTKView!
     @IBOutlet weak var cursorImage: NSImageView!
+    @IBOutlet weak var containerView: NSView!
     
     var slider: NSSlider?
     var touchBarCursorLabel: NSTextField?
@@ -261,5 +262,11 @@ extension NSTouchBarItem.Identifier {
 extension ViewController {
     func selectIndex(_ index: Int) {
         shaderIndex = index
+    }
+}
+
+extension ViewController: NSSplitViewDelegate {
+    func splitView(_ splitView: NSSplitView, canCollapseSubview subview: NSView) -> Bool {
+        return subview == containerView
     }
 }

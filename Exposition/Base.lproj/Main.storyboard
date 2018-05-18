@@ -738,7 +738,7 @@
                                         <collectionView selectable="YES" allowsEmptySelection="NO" id="3Nw-u7-dEJ">
                                             <rect key="frame" x="0.0" y="0.0" width="450" height="158"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                            <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="0oL-fX-z7x">
+                                            <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" scrollDirection="horizontal" id="0oL-fX-z7x">
                                                 <size key="itemSize" width="50" height="50"/>
                                                 <size key="headerReferenceSize" width="20" height="20"/>
                                                 <size key="footerReferenceSize" width="20" height="20"/>
@@ -821,6 +821,9 @@
                                     <real value="250"/>
                                     <real value="260"/>
                                 </holdingPriorities>
+                                <connections>
+                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="GnB-gA-erN"/>
+                                </connections>
                             </splitView>
                         </subviews>
                         <constraints>
@@ -834,6 +837,7 @@
                         </constraints>
                     </customView>
                     <connections>
+                        <outlet property="containerView" destination="V0K-zl-xhi" id="nsq-de-UwP"/>
                         <outlet property="coordinates" destination="EIP-nV-nVf" id="Miv-bX-3in"/>
                         <outlet property="cursorImage" destination="rBd-5q-B2h" id="DuE-El-Bgx"/>
                         <outlet property="mtkView" destination="ti1-Cv-H1a" id="Yyn-zD-Dr3"/>

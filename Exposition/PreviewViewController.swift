@@ -27,7 +27,6 @@ class PreviewViewController: NSViewController, NSCollectionViewDataSource, NSCol
     override func viewDidLoad() {
         super.viewDidLoad()
         previewList.register(FractalPreview.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier("cv"))
-        
     }
     
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
@@ -36,8 +35,13 @@ class PreviewViewController: NSViewController, NSCollectionViewDataSource, NSCol
     }
 
     func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> NSSize {
-        let l = 60 // todo: layout items properly
-        // they should be centered and should occupy their surrounding space
-        return NSSize(width: l, height: l)
+        if let vfl = collectionViewLayout as? NSCollectionViewFlowLayout {
+            let l = collectionView.frame.height - (vfl.sectionInset.top + vfl.sectionInset.bottom)
+            return NSSize(width: l, height: l)
+        } else {
+            let l = 60 // todo: layout items properly
+            // they should be centered and should occupy their surrounding space
+            return NSSize(width: l, height: l)
+        }
     }
 }
