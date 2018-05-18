@@ -143,7 +143,7 @@ class Shader {
         }
         
         return [
-            shader(iterator: "z - c * (z * z * z - 1)/(3 * z * z)", usingEscapeIteration: true),
+            shader(iterator: "z - c * ((((z * z * z) - 1)/(3 * (z * z))))", usingEscapeIteration: true),
             shader(iterator: "z - c * (0.5 * z + 1/z)", usingEscapeIteration: false),
             shader(iterator: "z - c * cos(z)/(-sin(z))", usingEscapeIteration: true),
             shader(iterator: "z*z + c", usingEscapeIteration: true),

@@ -55,11 +55,11 @@ public:
     }
     
     ComplexOp(+, float o) {
-        return z + o;
+        return z + float2(o, 0);
     }
     
     ComplexOp(-, float o) {
-        return z - o;
+        return z - float2(o, 0);
     }
     
     ComplexOp(*, float o) {
@@ -156,7 +156,7 @@ inline float4 colorForIterationNewton(Complex z, Complex c, int i, int maxiters,
 
 inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
 //    return z - c * sin(z)/cos(z);
-//    return z - c * (z * z * z- Complex(1, 0))/(Complex(3, 0) * z * z);
+//    return z - c * (z * z * z - Complex(1, 0))/(Complex(3, 0) * z * z);
     return iterator;
 //    return z - c * (Complex(0.5, 0) * z + 1/z);
 //    return z - c * cos(z)/(-sin(z));
@@ -172,7 +172,7 @@ float4 iterate(Complex Z, Complex C, int maxiters, float escape) {
         if (use_escape_iteration) {
             if (z2.length_squared() > escape) return colorForIterationNewton(z2, c, i, maxiters, escape);
         } else {
-            if ((z2 - z).length() < 0.00001) return colorForIterationNewton(z2, c, i, maxiters, escape);
+            if ((z2 - z).length() < 0.01) return colorForIterationNewton(z2, c, i, maxiters, escape);
         }
         z = z2;
     }

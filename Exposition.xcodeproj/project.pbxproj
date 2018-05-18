@@ -23,7 +23,6 @@
 		86DF48BF209D92930012088A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86DF48BD209D92930012088A /* Main.storyboard */; };
 		86DF48C8209D96290012088A /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DF48C7209D96290012088A /* Window.swift */; };
 		86DF48CB209D970E0012088A /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 86DF48CA209D970E0012088A /* Shaders.metal */; };
-		86F6F91220A6BB3900601B10 /* Complex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 86F6F91120A6BB3900601B10 /* Complex.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,7 +57,7 @@
 		86DF48C1209D92930012088A /* Exposition.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Exposition.entitlements; sourceTree = "<group>"; };
 		86DF48C7209D96290012088A /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		86DF48CA209D970E0012088A /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		86F6F91120A6BB3900601B10 /* Complex.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Complex.metal; sourceTree = "<group>"; };
+		86E853ED20AEC468007FFE37 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +101,7 @@
 		86DF48B6209D92920012088A /* Exposition */ = {
 			isa = PBXGroup;
 			children = (
+				86E853ED20AEC468007FFE37 /* README.md */,
 				86DF48B7209D92920012088A /* AppDelegate.swift */,
 				86DF48B9209D92920012088A /* ViewController.swift */,
 				864F45AB20A95505008E6D89 /* PreviewViewController.swift */,
@@ -114,7 +114,6 @@
 				86DF48BB209D92930012088A /* Assets.xcassets */,
 				86DF48BD209D92930012088A /* Main.storyboard */,
 				86DF48CA209D970E0012088A /* Shaders.metal */,
-				86F6F91120A6BB3900601B10 /* Complex.metal */,
 				86DF48C0209D92930012088A /* Info.plist */,
 				86DF48C1209D92930012088A /* Exposition.entitlements */,
 			);
@@ -206,7 +205,6 @@
 				86285AA8209DA201002E0CE3 /* ThreadgroupSize.swift in Sources */,
 				86DF48BA209D92920012088A /* ViewController.swift in Sources */,
 				86DF48B8209D92920012088A /* AppDelegate.swift in Sources */,
-				86F6F91220A6BB3900601B10 /* Complex.metal in Sources */,
 				86DF48C8209D96290012088A /* Window.swift in Sources */,
 				864F45AC20A95505008E6D89 /* PreviewViewController.swift in Sources */,
 				864F45AF20A95703008E6D89 /* FractalPreview.swift in Sources */,
