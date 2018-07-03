@@ -36,12 +36,18 @@ class PreviewViewController: NSViewController, NSCollectionViewDataSource, NSCol
 
     func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> NSSize {
         if let vfl = collectionViewLayout as? NSCollectionViewFlowLayout {
-            let l = collectionView.frame.height - (vfl.sectionInset.top + vfl.sectionInset.bottom)
-            return NSSize(width: l, height: l)
+            let dynamicLength = collectionView.frame.height - (vfl.sectionInset.top + vfl.sectionInset.bottom + vfl.headerReferenceSize.height + vfl.footerReferenceSize.height)
+            let length = max(dynamicLength, 60)
+            return NSSize(width: length, height: length)
         } else {
             let l = 60 // todo: layout items properly
             // they should be centered and should occupy their surrounding space
             return NSSize(width: l, height: l)
         }
+    }
+    
+    override func viewWillLayout() {
+        super.viewWillLayout()
+        previewList.collectionViewLayout?.invalidateLayout()
     }
 }

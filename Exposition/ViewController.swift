@@ -266,7 +266,13 @@ extension ViewController {
 }
 
 extension ViewController: NSSplitViewDelegate {
-    func splitView(_ splitView: NSSplitView, canCollapseSubview subview: NSView) -> Bool {
-        return subview == containerView
+    func splitView(_ splitView: NSSplitView, constrainSplitPosition proposedPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat {
+        let height: CGFloat = 100
+        if splitView.frame.height - proposedPosition > height {
+            return proposedPosition
+        } else if splitView.frame.height - proposedPosition <= 25 {
+            return splitView.frame.height - 25
+        }
+        return splitView.frame.height - height
     }
 }
