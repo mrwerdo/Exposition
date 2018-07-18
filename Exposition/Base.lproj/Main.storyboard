@@ -697,13 +697,13 @@
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="Ab8-7p-rMQ"/>
             </objects>
-            <point key="canvasLocation" x="80" y="-41"/>
+            <point key="canvasLocation" x="95" y="-65"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
-                    <window key="window" title="Exposition" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="Window" customModule="Exposition" customModuleProvider="target">
+                    <window key="window" title="Exposition" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="Window" customModule="Exposition" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="480" height="360"/>
@@ -721,39 +721,18 @@
             </objects>
             <point key="canvasLocation" x="75" y="250"/>
         </scene>
-        <!--Window Controller-->
-        <scene sceneID="ISg-9x-oxH">
+        <!--Preview View Controller-->
+        <scene sceneID="kGJ-ZN-wcq">
             <objects>
-                <windowController id="d2k-P2-Dh4" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Mdc-Ss-qmz">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="263" width="480" height="247"/>
-                        <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
-                        <connections>
-                            <outlet property="delegate" destination="d2k-P2-Dh4" id="CHE-Pi-v6B"/>
-                        </connections>
-                    </window>
-                    <connections>
-                        <segue destination="T0g-BJ-Lrn" kind="relationship" relationship="window.shadowedContentViewController" id="3U1-O5-I6M"/>
-                    </connections>
-                </windowController>
-                <customObject id="84a-Jn-b5N" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-461" y="215"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="Dhx-Jc-2Zj">
-            <objects>
-                <viewController id="T0g-BJ-Lrn" sceneMemberID="viewController">
-                    <view key="view" id="FXG-gX-Ovd">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                <viewController id="Yxj-PM-deM" customClass="PreviewViewController" customModule="Exposition" customModuleProvider="target" sceneMemberID="viewController">
+                    <visualEffectView key="view" wantsLayer="YES" appearanceType="vibrantLight" blendingMode="withinWindow" material="appearanceBased" state="active" id="dCJ-JO-tbg">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="160"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <box boxType="custom" borderType="none" borderWidth="0.0" cornerRadius="4" title="Box" translatesAutoresizingMaskIntoConstraints="NO" id="lK9-on-Gsb">
-                                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
-                                <view key="contentView" id="vWH-ho-4ti">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            <scrollView wantsLayer="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="allowed" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="15u-qF-FfY">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="160"/>
+                                <clipView key="contentView" drawsBackground="NO" id="pUa-ym-iwV">
+                                    <rect key="frame" x="0.0" y="0.0" width="450" height="160"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <collectionView selectable="YES" allowsEmptySelection="NO" id="3Nw-u7-dEJ">
@@ -771,21 +750,36 @@
                                             </connections>
                                         </collectionView>
                                     </subviews>
-                                </view>
-                                <color key="fillColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </box>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </clipView>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="200" id="Iby-VS-LCF"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="ZWm-TI-g5r"/>
+                                </constraints>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6hA-wb-ueE">
+                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="U0G-p1-L1e">
+                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="lK9-on-Gsb" secondAttribute="bottom" id="8BQ-8J-Czg"/>
-                            <constraint firstAttribute="trailing" secondItem="lK9-on-Gsb" secondAttribute="trailing" id="Qq8-WS-hBa"/>
-                            <constraint firstItem="lK9-on-Gsb" firstAttribute="top" secondItem="FXG-gX-Ovd" secondAttribute="top" id="jca-zy-qsb"/>
-                            <constraint firstItem="lK9-on-Gsb" firstAttribute="leading" secondItem="FXG-gX-Ovd" secondAttribute="leading" id="yWN-gF-iYu"/>
+                            <constraint firstItem="15u-qF-FfY" firstAttribute="leading" secondItem="dCJ-JO-tbg" secondAttribute="leading" id="EpC-Dy-AAY"/>
+                            <constraint firstAttribute="trailing" secondItem="15u-qF-FfY" secondAttribute="trailing" id="Gre-B7-NZI"/>
+                            <constraint firstItem="15u-qF-FfY" firstAttribute="top" secondItem="dCJ-JO-tbg" secondAttribute="top" id="Tup-2w-XYm"/>
+                            <constraint firstAttribute="bottom" secondItem="15u-qF-FfY" secondAttribute="bottom" id="mke-Va-Ast"/>
                         </constraints>
-                    </view>
+                    </visualEffectView>
+                    <connections>
+                        <outlet property="previewList" destination="3Nw-u7-dEJ" id="0gk-TM-jqL"/>
+                    </connections>
                 </viewController>
-                <customObject id="kfN-lp-LuW" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="Tg4-ou-rge" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-461" y="718"/>
+            <point key="canvasLocation" x="75" y="1073"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -808,14 +802,42 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSAddTemplate" id="fMm-AE-2Md"/>
                             </imageView>
+                            <splitView arrangesAllSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TiO-Kj-xkv">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                <subviews>
+                                    <customView fixedFrame="YES" id="57H-oc-dRj">
+                                        <rect key="frame" x="0.0" y="0.0" width="450" height="196"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </customView>
+                                    <containerView fixedFrame="YES" id="V0K-zl-xhi">
+                                        <rect key="frame" x="0.0" y="205" width="450" height="95"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <connections>
+                                            <segue destination="Yxj-PM-deM" kind="embed" id="SeN-8h-g8u"/>
+                                        </connections>
+                                    </containerView>
+                                </subviews>
+                                <holdingPriorities>
+                                    <real value="250"/>
+                                    <real value="260"/>
+                                </holdingPriorities>
+                                <connections>
+                                    <outlet property="delegate" destination="XfG-lQ-9wD" id="GnB-gA-erN"/>
+                                </connections>
+                            </splitView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="TiO-Kj-xkv" firstAttribute="top" secondItem="ti1-Cv-H1a" secondAttribute="top" id="4VN-1s-gtM"/>
                             <constraint firstAttribute="bottom" secondItem="EIP-nV-nVf" secondAttribute="bottom" constant="20" symbolic="YES" id="5Cv-gj-kVC"/>
+                            <constraint firstAttribute="trailing" secondItem="TiO-Kj-xkv" secondAttribute="trailing" id="F8L-N4-fA8"/>
+                            <constraint firstAttribute="bottom" secondItem="TiO-Kj-xkv" secondAttribute="bottom" id="Qbr-RZ-fg0"/>
+                            <constraint firstItem="TiO-Kj-xkv" firstAttribute="leading" secondItem="ti1-Cv-H1a" secondAttribute="leading" id="W7W-Dg-y4B"/>
                             <constraint firstAttribute="trailing" secondItem="EIP-nV-nVf" secondAttribute="trailing" constant="20" symbolic="YES" id="Xwn-w0-ncN"/>
                             <constraint firstItem="EIP-nV-nVf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ti1-Cv-H1a" secondAttribute="leading" constant="20" symbolic="YES" id="utK-YR-Oab"/>
                         </constraints>
                     </customView>
                     <connections>
+                        <outlet property="containerView" destination="V0K-zl-xhi" id="nsq-de-UwP"/>
                         <outlet property="coordinates" destination="EIP-nV-nVf" id="Miv-bX-3in"/>
                         <outlet property="cursorImage" destination="rBd-5q-B2h" id="DuE-El-Bgx"/>
                         <outlet property="mtkView" destination="ti1-Cv-H1a" id="Yyn-zD-Dr3"/>
@@ -823,7 +845,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="718"/>
+            <point key="canvasLocation" x="75" y="687"/>
         </scene>
     </scenes>
     <resources>
