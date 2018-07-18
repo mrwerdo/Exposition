@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8624951720FF2DDB0013D7AE /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = 8624951620FF2DDB0013D7AE /* Samples */; };
 		86285AA8209DA201002E0CE3 /* ThreadgroupSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86285AA7209DA201002E0CE3 /* ThreadgroupSize.swift */; };
 		864F45AA20A95109008E6D89 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F45A920A95109008E6D89 /* Shader.swift */; };
 		864F45AC20A95505008E6D89 /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F45AB20A95505008E6D89 /* PreviewViewController.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8624951620FF2DDB0013D7AE /* Samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Samples; sourceTree = SOURCE_ROOT; };
 		86285AA7209DA201002E0CE3 /* ThreadgroupSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadgroupSize.swift; sourceTree = "<group>"; };
 		864F45A920A95109008E6D89 /* Shader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		864F45AB20A95505008E6D89 /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 		86DF48AB209D92920012088A = {
 			isa = PBXGroup;
 			children = (
+				8624951620FF2DDB0013D7AE /* Samples */,
 				86DF48B6209D92920012088A /* Exposition */,
 				86DF48B5209D92920012088A /* Products */,
 			);
@@ -184,6 +187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8624951720FF2DDB0013D7AE /* Samples in Resources */,
 				86DF48BC209D92930012088A /* Assets.xcassets in Resources */,
 				86DF48BF209D92930012088A /* Main.storyboard in Resources */,
 				864F45B020A95703008E6D89 /* FractalPreview.xib in Resources */,

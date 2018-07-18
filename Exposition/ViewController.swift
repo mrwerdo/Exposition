@@ -223,17 +223,37 @@ class ViewController: NSViewController, MTKViewDelegate {
         let url = URL(fileURLWithPath: "\(NSHomeDirectory())/Desktop/Capture \(timestamp()).tiff")
         let size = mtkView?.drawableSize ?? .zero
         if let image = shader?.makeImage(size: size, cursor: cursorPosition, zoom: zoom, origin: origin) {
-            if let tiffData = image.tiffRepresentation {
-                do {
-                    try tiffData.write(to: url)
-                } catch {
-                    NSAlert(error: error).runModal()
-                }
-            } else {
-                print("could not get tiff representation")
-            }
+            image.writePNG(toURL: url)
+//            if let tiffData = image.tiffRepresentation {
+//                do {
+//                    try tiffData.write(to: url)
+//                } catch {
+//                    NSAlert(error: error).runModal()
+//                }
+//            } else {
+//                print("could not get tiff representation")
+//            }
         } else {
             print("could not save image")
+        }
+    }
+}
+
+public extension NSImage {
+    public func writePNG(toURL url: URL) {
+        
+        guard let data = tiffRepresentation,
+            let rep = NSBitmapImageRep(data: data),
+            let imgData = rep.representation(using: .png, properties: [.compressionFactor : NSNumber(floatLiteral: 1.0)]) else {
+                
+                Swift.print("\(self.self) Error Function '\(#function)' Line: \(#line) No tiff rep found for image writing to \(url)")
+                return
+        }
+        
+        do {
+            try imgData.write(to: url)
+        }catch let error {
+            Swift.print("\(self.self) Error Function '\(#function)' Line: \(#line) \(error.localizedDescription)")
         }
     }
 }

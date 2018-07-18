@@ -10,10 +10,15 @@ drag to adjust it's location.
 
 ## Samples
 • The Mandelbrot Set
-• Julia Sets
-• Roots of z cubed equals 1
-
-Parameterised fractals:
+![Mandelbrot Set](https://github.com/mrwerdo/Exposition/Samples/MandelbrotSet.png)
+• Julia Sets
+![Julia Sets](https://github.com/mrwerdo/Exposition/Samples/JuliaSet.png)
 • Roots of z cubed equals 1
-• Sine and cosine
+![Roots of z cubed equals 1](https://github.com/mrwerdo/Exposition/Samples/ZCubed1.png)
+![Roots of z cubed equals 1](https://github.com/mrwerdo/Exposition/Samples/ZCubed2.png)
+![Roots of z cubed equals 1](https://github.com/mrwerdo/Exposition/Samples/ZCubed3.png)
+• Cosine
+![Cosine](https://github.com/mrwerdo/Exposition/Samples/Cosine1.png)
+![Cosine](https://github.com/mrwerdo/Exposition/Samples/Cosine2.png)
 • Square root of z
+![Square Root](https://github.com/mrwerdo/Exposition/Samples/SquareRoot.png)
