@@ -65,15 +65,18 @@ class Shader {
         buf[5] = Float32(zoom.height)
     }
     
-    func makeImage(size: CGSize = CGSize(width: 512, height: 512)) -> NSImage? {
+    func makeImage(size: CGSize = CGSize(width: 512, height: 512),
+                   cursor: CGPoint = CGPoint(x: 384, y: 256),
+                   zoom: CGSize = CGSize(width: 1, height: 1),
+                   origin: CGPoint = CGPoint(x: 0, y: 0)) -> NSImage? {
         
         guard let metal = AppDelegate.shared.metal else {
             fatalError()
         }
         
-        initaliseBuffer(cursor: CGPoint(x: 384, y: 256),
-                        zoom: CGSize(width: 1, height: 1),
-                        origin: CGPoint(x: 0, y: 0)
+        initaliseBuffer(cursor: cursor,
+                        zoom: zoom,
+                        origin: origin
         )
         
         let layer = CAMetalLayer()
@@ -143,11 +146,11 @@ class Shader {
         }
         
         return [
-            shader(iterator: "z - c * ((((z * z * z) - 1)/(3 * (z * z))))", usingEscapeIteration: true),
-            shader(iterator: "z - c * (0.5 * z + 1/z)", usingEscapeIteration: false),
-            shader(iterator: "z - c * cos(z)/(-sin(z))", usingEscapeIteration: true),
-            shader(iterator: "z*z + c", usingEscapeIteration: true),
-            shader(iterator: "z*z + Z", usingEscapeIteration: true),
+            shader(iterator: "z - c * ((((z * z * z) - 1)/(3 * (z * z))))", usingEscapeIteration: true), // cubic zeros
+            shader(iterator: "z - c * (0.5 * z + 1/z)", usingEscapeIteration: false), // square root zeros
+            shader(iterator: "z - c * cos(z)/(-sin(z))", usingEscapeIteration: true), // cosine zeros
+            shader(iterator: "z*z + c", usingEscapeIteration: true), // julia set
+            shader(iterator: "z*z + Z", usingEscapeIteration: true), // mandelbrot set
             ].compactMap { $0 }
     }
     
