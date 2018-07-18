@@ -9,16 +9,16 @@ fields of complex numbers. There is a cursor which shows where in the complex pl
 drag to adjust it's location.
 
 ## Samples
-• The Mandelbrot Set
+### The Mandelbrot Set
 ![Mandelbrot Set](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/MandelbrotSet.png)
-• Julia Sets
+### Julia Sets
 ![Julia Sets](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/JuliaSet.png)
-• Roots of z cubed equals 1
+### Roots of z cubed equals 1
 ![Roots of z cubed equals 1](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/ZCubed1.png)
 ![Roots of z cubed equals 1](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/ZCubed2.png)
 ![Roots of z cubed equals 1](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/ZCubed3.png)
-• Cosine
+### Cosine
 ![Cosine](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/Cosine1.png)
 ![Cosine](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/Cosine2.png)
-• Square root of z
+### Square root of z
 ![Square Root](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/SquareRoot.png)
