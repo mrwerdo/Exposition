@@ -208,8 +208,54 @@ class ViewController: NSViewController, MTKViewDelegate {
         return CGPoint(x: (point.x - size.width/2) * scale,
                        y: (point.y - size.height/2) * scale)
     }
-
     
+    func timestamp() -> String {
+        let now = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let date = formatter.string(from: now)
+        formatter.dateFormat = "h.mm.ss a"
+        let time = formatter.string(from: now)
+        return "\(date) at \(time)"
+    }
+    
+    @objc @IBAction func saveDocument(_ sender: Any) {
+        let url = URL(fileURLWithPath: "\(NSHomeDirectory())/Desktop/Capture \(timestamp()).tiff")
+        let size = mtkView?.drawableSize ?? .zero
+        if let image = shader?.makeImage(size: size, cursor: cursorPosition, zoom: zoom, origin: origin) {
+            image.writePNG(toURL: url)
+//            if let tiffData = image.tiffRepresentation {
+//                do {
+//                    try tiffData.write(to: url)
+//                } catch {
+//                    NSAlert(error: error).runModal()
+//                }
+//            } else {
+//                print("could not get tiff representation")
+//            }
+        } else {
+            print("could not save image")
+        }
+    }
+}
+
+public extension NSImage {
+    public func writePNG(toURL url: URL) {
+        
+        guard let data = tiffRepresentation,
+            let rep = NSBitmapImageRep(data: data),
+            let imgData = rep.representation(using: .png, properties: [.compressionFactor : NSNumber(floatLiteral: 1.0)]) else {
+                
+                Swift.print("\(self.self) Error Function '\(#function)' Line: \(#line) No tiff rep found for image writing to \(url)")
+                return
+        }
+        
+        do {
+            try imgData.write(to: url)
+        }catch let error {
+            Swift.print("\(self.self) Error Function '\(#function)' Line: \(#line) \(error.localizedDescription)")
+        }
+    }
 }
 
 extension ViewController: NSTouchBarDelegate {
@@ -248,6 +294,7 @@ extension ViewController: NSTouchBarDelegate {
         default: return nil
         }
     }
+
 }
 
 extension NSTouchBar.CustomizationIdentifier {
