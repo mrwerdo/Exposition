@@ -17,6 +17,8 @@ also Touch Bar support 😉.
 Exposition runs on macOS High Sierra 10.13 (released in late 2017). It might work on previous versions but I haven't
 tested it.
 
+The latest version can be [downloaded from here](https://github.com/Mrwerdo/Exposition/releases).
+
 ## Samples
 ### The Mandelbrot Set
 ![Mandelbrot Set](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Samples/MandelbrotSet.png)
