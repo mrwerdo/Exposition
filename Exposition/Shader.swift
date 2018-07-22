@@ -213,13 +213,15 @@ class Shader {
             }
             
             guard let commandQueue = AppDelegate.shared.metal?.commandQueue else {
-                return print("commandQueue nil, and we're drawing?")
+                print("commandQueue nil, and we're drawing?")
+                return
             }
             
             guard let buffer = commandQueue.makeCommandBuffer(),
                 let encoder = buffer.makeComputeCommandEncoder()
                 else {
-                    return print("buffer or encoder nil!")
+                    print("buffer or encoder nil!")
+                    return
             }
             
             encoder.setTexture(drawable.texture, index: 0)
