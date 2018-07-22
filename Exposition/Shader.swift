@@ -98,15 +98,15 @@ class Shader {
             
             let context = CIContext(mtlDevice: metal.device, options: [kCIContextWorkingColorSpace: colorspace])
             guard let texture = drawable?.texture else {
-                fatalError()
+                return nil
             }
             
             guard let cImg = CIImage(mtlTexture: texture, options: nil) else {
-                fatalError()
+                return nil
             }
             
             guard let cgImg = context.createCGImage(cImg, from: cImg.extent) else {
-                fatalError()
+                return nil
             }
             
             return NSImage(cgImage: cgImg, size: size)
