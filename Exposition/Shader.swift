@@ -86,6 +86,9 @@ class Shader {
         layer.frame.size = size
         layer.device = metal.device
         layer.framebufferOnly = false
+        
+        let colorspace = CGColorSpaceCreateDeviceRGB()
+        layer.colorspace = colorspace
 
         return autoreleasepool {
             let drawable = layer.nextDrawable()
@@ -93,13 +96,15 @@ class Shader {
                 return nil
             }
             
-            let context = CIContext()
+            let context = CIContext(mtlDevice: metal.device, options: [kCIContextWorkingColorSpace: colorspace])
             guard let texture = drawable?.texture else {
                 fatalError()
             }
+            
             guard let cImg = CIImage(mtlTexture: texture, options: nil) else {
                 fatalError()
             }
+            
             guard let cgImg = context.createCGImage(cImg, from: cImg.extent) else {
                 fatalError()
             }
