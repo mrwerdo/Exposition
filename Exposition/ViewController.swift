@@ -294,7 +294,6 @@ extension ViewController: NSTouchBarDelegate {
         default: return nil
         }
     }
-
 }
 
 extension NSTouchBar.CustomizationIdentifier {
@@ -321,5 +320,9 @@ extension ViewController: NSSplitViewDelegate {
             return splitView.frame.height - 25
         }
         return splitView.frame.height - height
+    }
+    
+    func splitView(_ splitView: NSSplitView, canCollapseSubview subview: NSView) -> Bool {
+        return subview == containerView
     }
 }
