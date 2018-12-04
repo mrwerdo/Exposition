@@ -96,7 +96,7 @@ class Shader {
                 return nil
             }
             
-            let context = CIContext(mtlDevice: metal.device, options: [kCIContextWorkingColorSpace: colorspace])
+            let context = CIContext(mtlDevice: metal.device, options: convertToOptionalCIContextOptionDictionary([convertFromCIContextOption(CIContextOption.workingColorSpace): colorspace]))
             guard let texture = drawable?.texture else {
                 return nil
             }
@@ -156,6 +156,8 @@ class Shader {
             shader(iterator: "z - c * cos(z)/(-sin(z))", usingEscapeIteration: true), // cosine zeros
             shader(iterator: "z*z + c", usingEscapeIteration: true), // julia set
             shader(iterator: "z*z + Z", usingEscapeIteration: true), // mandelbrot set
+            shader(iterator: "z - c * ((((z * z * z * z * z) - 1)/(5 * (z * z * z * z))))", usingEscapeIteration: true),
+            shader(iterator: "z - c * (z.pow(3) + z + 1)/(3*z.pow(2) + 1)", usingEscapeIteration: true),
             ].compactMap { $0 }
     }
     
@@ -237,4 +239,15 @@ class Shader {
             buffer.waitUntilCompleted()
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromCIContextOption(_ input: CIContextOption) -> String {
+	return input.rawValue
 }

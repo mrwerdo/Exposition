@@ -69,12 +69,7 @@ public:
     ComplexOp(/, float o) {
         return *this / Complex(o, 0);
     }
-    
-    ComplexOp(^, float n) {
-        float r = pow(metal::length(z), n);
-        float arg = n * atan2(z.y, z.x);
-        return Complex(r * cos(arg), r * sin(arg));
-    }
+
     
     inline Complex operator - () const {
         return Complex(-z);
@@ -86,6 +81,12 @@ public:
     
     inline float length() const {
         return metal::length(z);
+    }
+    
+    inline Complex pow(float n) {
+        float r = metal::pow(metal::length(z), n);
+        float arg = n * atan2(z.y, z.x);
+        return Complex(r * cos(arg), r * sin(arg));
     }
 };
 

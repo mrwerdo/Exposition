@@ -20,6 +20,7 @@ class FractalPreview: NSCollectionViewItem {
     override var isSelected: Bool {
         didSet {
             box.borderType = isSelected ? .grooveBorder : .noBorder
+            
         }
     }
 }
