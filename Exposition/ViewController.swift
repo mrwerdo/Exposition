@@ -298,7 +298,7 @@ extension ViewController: NSTouchBarDelegate {
 }
 
 extension NSTouchBar.CustomizationIdentifier {
-    static let expositionParameters = NSTouchBar.CustomizationIdentifier(rawValue: "expositionParameters")
+    static let expositionParameters = "expositionParameters"
 }
 
 extension NSTouchBarItem.Identifier {
