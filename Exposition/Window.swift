@@ -15,4 +15,8 @@ class Window: NSWindow {
                     y: frame.origin.y - event.deltaY)
         )
     }
+    
+    override func keyUp(with event: NSEvent) {
+        contentViewController?.keyUp(with: event)
+    }
 }

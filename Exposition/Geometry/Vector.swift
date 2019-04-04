@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol VectorType: Comparable, Hashable {
+public protocol VectorType: Comparable {
     associatedtype Value: Numeric
     static var components: [WritableKeyPath<Self, Value>] { get }
     
@@ -38,9 +38,14 @@ public extension VectorType {
         }
         return true
     }
-    
-    var hashValue: Int {
-        return Self.components.description.hashValue // FIXME: This hash algorithm is inefficient.
+}
+
+public extension VectorType where Value: Hashable {
+    func hash(into hasher: inout Hasher) {
+        for p in Self.components {
+            let k = self[keyPath: p]
+            hasher.combine(k)
+        }
     }
 }
 

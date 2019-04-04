@@ -96,7 +96,8 @@ class Shader {
                 return nil
             }
             
-            let context = CIContext(mtlDevice: metal.device, options: convertToOptionalCIContextOptionDictionary([convertFromCIContextOption(CIContextOption.workingColorSpace): colorspace]))
+            let context = CIContext(mtlDevice: metal.device, options: [CIContextOption.workingColorSpace : colorspace])
+            
             guard let texture = drawable?.texture else {
                 return nil
             }

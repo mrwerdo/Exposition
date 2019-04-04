@@ -37,10 +37,6 @@ public struct Complex : Equatable, CustomStringConvertible, Hashable {
     public var arg: Double {
        return atan2(imaginary, real)
     }
-    
-    public var hashValue: Int {
-        return Int(real) ^ Int(imaginary)
-    }
 }
 
 public func ==(lhs: Complex, rhs: Complex) -> Bool {

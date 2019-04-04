@@ -125,6 +125,22 @@ class ViewController: NSViewController, MTKViewDelegate {
         origin.y *= scale.height
         _ = shader?.checkThreadgroupSize(for: size)
     }
+    
+    override func keyUp(with event: NSEvent) {
+        let dx: CGFloat = 1
+        let dy = dx
+        switch event.keyCode {
+            case 0:
+            cursorPosition.x -= dx
+            case 2:
+            cursorPosition.x += dx
+            case 1:
+            cursorPosition.y -= dy
+            case 13:
+            cursorPosition.y += dy
+            default: print(event.keyCode)
+        }
+    }
 
     override func mouseDown(with event: NSEvent) {
         if event.modifierFlags.contains(.option) {
