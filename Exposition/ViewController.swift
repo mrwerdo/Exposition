@@ -26,6 +26,10 @@ class MetalView: MTKView {
     override var acceptsFirstResponder: Bool {
         return true
     }
+    
+    override var canBecomeKeyView: Bool {
+        return true
+    }
 }
 
 class ViewController: NSViewController, MTKViewDelegate {
@@ -52,6 +56,7 @@ class ViewController: NSViewController, MTKViewDelegate {
     var isMouseDown: Bool = false
     var origin: CGPoint = .zero
     var cursor: NSCursor!
+    var keyPressed: [CGKeyCode : Bool] = [:]
     
     var shouldShowCursor: Bool {
         return UserDefaults.standard.bool(forKey: "shouldShowCursor")
@@ -88,6 +93,15 @@ class ViewController: NSViewController, MTKViewDelegate {
             return
         }
         mtkView.device = device
+        
+     
+    }
+    
+    func graph(object: NSResponder?) {
+        if let o = object {
+            print(o)
+            graph(object: o.nextResponder)
+        }
     }
     
     override func viewDidAppear() {
@@ -113,6 +127,7 @@ class ViewController: NSViewController, MTKViewDelegate {
     }
     
     func draw(in view: MTKView) {
+        cursorKeyBindingUpdate()
         shader?.initaliseBuffer(cursor: cursorPosition, zoom: zoom, origin: origin)
         shader?.draw(in: view)
     }
@@ -126,23 +141,36 @@ class ViewController: NSViewController, MTKViewDelegate {
         _ = shader?.checkThreadgroupSize(for: size)
     }
     
+    override func keyDown(with event: NSEvent) {
+        keyPressed[event.keyCode] = true
+    }
+    
     override func keyUp(with event: NSEvent) {
-        let dx: CGFloat = 1
-        let dy = dx
-        switch event.keyCode {
+        keyPressed[event.keyCode] = false
+    }
+    
+    func cursorKeyBindingUpdate() {
+        let keys = keyPressed.filter { $0.value }
+        for v in keys {
+            let dx: CGFloat = 1
+            let dy: CGFloat =  1
+            print(v)
+            switch v.key {
             case 0:
-            cursorPosition.x -= dx
+                cursorPosition.x -= dx
             case 2:
-            cursorPosition.x += dx
+                cursorPosition.x += dx
             case 1:
-            cursorPosition.y -= dy
+                cursorPosition.y -= dy
             case 13:
-            cursorPosition.y += dy
-            default: print(event.keyCode)
+                cursorPosition.y += dy
+            default: break
+            }
         }
     }
 
     override func mouseDown(with event: NSEvent) {
+        mtkView.isPaused = false
         if event.modifierFlags.contains(.option) {
             didPickUp = true
             super.mouseDown(with: event)

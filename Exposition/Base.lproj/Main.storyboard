@@ -814,6 +814,7 @@
                                         <rect key="frame" x="0.0" y="205" width="450" height="95"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <connections>
+                                            <outlet property="nextKeyView" destination="57H-oc-dRj" id="Nvu-n5-9eI"/>
                                             <segue destination="Yxj-PM-deM" kind="embed" id="SeN-8h-g8u"/>
                                         </connections>
                                     </containerView>

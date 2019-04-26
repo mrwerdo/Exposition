@@ -71,6 +71,17 @@ public:
     }
 
     
+    ComplexOp(^, Complex w) {
+        float a = z.x;
+        float b = z.y;
+        float c = w.z.x;
+        float d = w.z.y;
+        float r = pow(a*a + b*b, c/2) / exp(d * atan2(b, a));
+        float t = c * atan2(b, a) + d * log(a*a + b*b)/2;
+        return Complex(r * cos(t),
+                       r * sin(t));
+    }
+    
     inline Complex operator - () const {
         return Complex(-z);
     }
@@ -131,6 +142,12 @@ inline Complex cos(const thread Complex& x) {
 }
 
 
+inline Complex log(const thread Complex& z) {
+    float real = log(z.length_squared());
+    float imag = atan2(z.y(), z.x());
+    return Complex(real/2, imag);
+}
+
 #ifndef iterator
 #define iterator (z - c * ((z * z * z) - 1)/(3 * (z * z)))
 #endif
@@ -139,16 +156,10 @@ using namespace metal;
 
 constant bool use_escape_iteration [[ function_constant(0) ]];
 
-/// Convert a point on the screen to a point in the complex plane.
-inline float2 screenToComplex(float2 point, float2 size, float2 zoom)
-{
-    const float scale = max(zoom.x/size.x, zoom.y/size.y);
-    return (point - size/2) * scale;
-}
-
 inline float4 colorForIterationNewton(Complex z, Complex c, int i, int maxiters, float escape)
 {
-    float hue = (i+1-log2(log10(z.length_squared())/2))/maxiters*4 * M_PI_F + 3;
+    float offset = z.length_squared();
+    float hue = (i+1-log2(log10(offset)/2))/maxiters*4 * M_PI_F + 3;
     return float4((cos(hue)+1)/2,
                   (-cos(hue+M_PI_F/3)+1)/2,
                   (-cos(hue-M_PI_F/3)+1)/2,
@@ -162,6 +173,7 @@ inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
 //    return z - c * e(cos(z)*sin(z) + c);
 //    return  z - c * (z * z * z * z * z - Complex(1, 0))/(Complex(5, 0) * z * z * z * z * z * z);
     return iterator;
+//    return z - c * log(z^z) / (log(z) + 1);
    
 //    return z - c * (Complex(0.5, 0) * z + 1/z);
 //    return z - c * cos(z)/(-sin(z));
@@ -199,13 +211,10 @@ kernel void newtonShader(texture2d<float, access::write> output [[texture(0)]],
     
     float2 uposf = float2(upos.x, upos.y);
     float2 size = float2(width, height);
-    
-    Complex z = screenToComplex(uposf - origin,
-                               size,
-                               zoom);
-    Complex c = screenToComplex(screenPoint,
-                               size,
-                               zoom);
-    
-    output.write(iterate(z, c, 100, 50), upos);
+    float2 o = origin * max(1/size.x, 1/size.y);
+    Complex z = ((uposf - size/2) * max(zoom.x/size.x, zoom.y/size.y)) - o;
+    Complex c = (screenPoint - size/2) * max(1/size.x, 1/size.y);
+//    Complex c = (screenPoint - size/2) * max(zoom.x/size.x, zoom.y/size.y);
+
+    output.write(iterate(z, c, 100, 70), upos);
 }

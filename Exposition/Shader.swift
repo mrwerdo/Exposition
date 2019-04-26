@@ -153,12 +153,18 @@ class Shader {
         
         return [
             shader(iterator: "z - c * ((((z * z * z) - 1)/(3 * (z * z))))", usingEscapeIteration: true), // cubic zeros
+            shader(iterator: "z - c * (1/((z^3) - 1))/((-3*(z^2))/((z^3) - 1))", usingEscapeIteration: true), // log of z power z
+            shader(iterator: "z - c * sin(z^3 - 1)/(cos(z^3 - 1)*3*(z^3))", usingEscapeIteration: true), // log of z power z
             shader(iterator: "z - c * (0.5 * z + 1/z)", usingEscapeIteration: false), // square root zeros
             shader(iterator: "z - c * cos(z)/(-sin(z))", usingEscapeIteration: true), // cosine zeros
             shader(iterator: "z*z + c", usingEscapeIteration: true), // julia set
             shader(iterator: "z*z + Z", usingEscapeIteration: true), // mandelbrot set
             shader(iterator: "z - c * ((((z * z * z * z * z) - 1)/(5 * (z * z * z * z))))", usingEscapeIteration: true),
             shader(iterator: "z - c * (z.pow(3) + z + 1)/(3*z.pow(2) + 1)", usingEscapeIteration: true),
+            shader(iterator: "z - c * log(z^z) / (log(z) + 1)", usingEscapeIteration: true), // log of z power z
+            shader(iterator: "z - c * log(z^(2*z)) / (log(2*z) + 1)", usingEscapeIteration: true), // log of z power z
+            shader(iterator: "z - c * log(z*z*z) * 3 * z", usingEscapeIteration: true), // log of z power z
+            shader(iterator: "z - c * log(z*z*z*z) * 4 * z", usingEscapeIteration: true), // log of z power z
             ].compactMap { $0 }
     }
     
