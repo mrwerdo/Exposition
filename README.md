@@ -1,3 +1,5 @@
+![Exposition Logo](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Exposition/Assets.xcassets/macOS20%App20%Icon.appiconset/macOS20%App20%Icon_128.png)
+
 # Exposition
 
 Quite frequently I've wanted to show people various fractals I've made and discovered. This usually translates into
