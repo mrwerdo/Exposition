@@ -76,11 +76,12 @@ public:
         float b = z.y;
         float c = w.z.x;
         float d = w.z.y;
-        float r = pow(a*a + b*b, c/2) / exp(d * atan2(b, a));
+        float r = metal::pow(a*a + b*b, c/2) / exp(d * atan2(b, a));
         float t = c * atan2(b, a) + d * log(a*a + b*b)/2;
         return Complex(r * cos(t),
                        r * sin(t));
     }
+    
     
     inline Complex operator - () const {
         return Complex(-z);
