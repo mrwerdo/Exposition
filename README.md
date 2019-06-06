@@ -1,4 +1,4 @@
-![Exposition Logo](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Exposition/Assets.xcassets/macOS20%App20%Icon.appiconset/macOS20%App20%Icon_128.png)
+![Exposition Logo](https://raw.githubusercontent.com/Mrwerdo/Exposition/master/Exposition/Assets.xcassets/macOS App Icon.appiconset/macOS App Icon_128.png)
 
 # Exposition
 
