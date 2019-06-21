@@ -167,19 +167,25 @@ inline float4 colorForIterationNewton(Complex z, Complex c, int i, int maxiters,
                   1);
 }
 
+inline Complex f(Complex z) {
+    return log(z^z);
+}
+
+inline Complex df(Complex z) {
+    return (log(z) + 1);
+}
+
 inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
-//    return z - c * sin(z)/cos(z);
-//    return z - c * (z * z * z - Complex(1, 0))/(Complex(3, 0) * z * z);
-    
-//    return z - c * e(cos(z)*sin(z) + c);
-//    return  z - c * (z * z * z * z * z - Complex(1, 0))/(Complex(5, 0) * z * z * z * z * z * z);
     return iterator;
-//    return z - c * log(z^z) / (log(z) + 1);
-   
-//    return z - c * (Complex(0.5, 0) * z + 1/z);
-//    return z - c * cos(z)/(-sin(z));
-//    return z - c * (z ^ p)/(Complex(p, 0) * z ** (-2.0/3.0));
-//    return z*z + c;
+//    return z - (c*f(z)) / (df(z));
+    
+//    Complex x_n = z;
+//    Complex df_x_n = df(x_n);
+//    Complex f_x_n = f(x_n);
+//    Complex z_n = z - f_x_n/df_x_n;
+//    Complex f_z_n = f(z_n);
+//    Complex x_n_1 = z_n - ((f_x_n + f_z_n)*f_z_n)/((f_x_n - f_z_n) * df_x_n);
+//    return x_n_1;
 }
 
 float4 iterate(Complex Z, Complex C, int maxiters, float escape) {
@@ -187,10 +193,11 @@ float4 iterate(Complex Z, Complex C, int maxiters, float escape) {
     Complex z = Z;
     for (int i = 0; i < maxiters; i++) {
         Complex z2 = function(z, c, Z, C);
+        c = (c / C)/2;
         if (use_escape_iteration) {
             if (z2.length_squared() > escape) return colorForIterationNewton(z2, c, i, maxiters, escape);
         } else {
-            if ((z2 - z).length() < 0.01) return colorForIterationNewton(z2, c, i, maxiters, escape);
+            if ((z2 - z).length() < 0.0001) return colorForIterationNewton(z2, c, i, maxiters, escape);
         }
         z = z2;
     }

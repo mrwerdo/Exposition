@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8624951720FF2DDB0013D7AE /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = 8624951620FF2DDB0013D7AE /* Samples */; };
 		86285AA8209DA201002E0CE3 /* ThreadgroupSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86285AA7209DA201002E0CE3 /* ThreadgroupSize.swift */; };
+		86332F8D22B99A5D0000C336 /* Equations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86332F8C22B99A5D0000C336 /* Equations.swift */; };
 		864F45AA20A95109008E6D89 /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F45A920A95109008E6D89 /* Shader.swift */; };
 		864F45AC20A95505008E6D89 /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F45AB20A95505008E6D89 /* PreviewViewController.swift */; };
 		864F45AF20A95703008E6D89 /* FractalPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864F45AD20A95702008E6D89 /* FractalPreview.swift */; };
@@ -25,6 +26,8 @@
 		86DF48BF209D92930012088A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86DF48BD209D92930012088A /* Main.storyboard */; };
 		86DF48C8209D96290012088A /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DF48C7209D96290012088A /* Window.swift */; };
 		86DF48CB209D970E0012088A /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 86DF48CA209D970E0012088A /* Shaders.metal */; };
+		86ECCAAC22BCB7A50073FDD9 /* Viewport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ECCAAB22BCB7A50073FDD9 /* Viewport.swift */; };
+		86ECCAAE22BCEB5B0073FDD9 /* ViewportOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ECCAAD22BCEB5B0073FDD9 /* ViewportOverlay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +46,7 @@
 /* Begin PBXFileReference section */
 		8624951620FF2DDB0013D7AE /* Samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Samples; sourceTree = SOURCE_ROOT; };
 		86285AA7209DA201002E0CE3 /* ThreadgroupSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadgroupSize.swift; sourceTree = "<group>"; };
+		86332F8C22B99A5D0000C336 /* Equations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Equations.swift; sourceTree = "<group>"; };
 		864F45A920A95109008E6D89 /* Shader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		864F45AB20A95505008E6D89 /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
 		864F45AD20A95702008E6D89 /* FractalPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FractalPreview.swift; sourceTree = "<group>"; };
@@ -61,6 +65,8 @@
 		86DF48C1209D92930012088A /* Exposition.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Exposition.entitlements; sourceTree = "<group>"; };
 		86DF48C7209D96290012088A /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		86DF48CA209D970E0012088A /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		86ECCAAB22BCB7A50073FDD9 /* Viewport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Viewport.swift; sourceTree = "<group>"; };
+		86ECCAAD22BCEB5B0073FDD9 /* ViewportOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewportOverlay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,22 +112,57 @@
 		86DF48B6209D92920012088A /* Exposition */ = {
 			isa = PBXGroup;
 			children = (
+				86ECCAA722BCB68B0073FDD9 /* Views */,
+				86ECCAA822BCB6B20073FDD9 /* ViewControllers */,
 				86DF48B7209D92920012088A /* AppDelegate.swift */,
+				86332F8C22B99A5D0000C336 /* Equations.swift */,
+				86ECCAA922BCB6CD0073FDD9 /* Graphics */,
+				86649FE220A9965F00287C81 /* Geometry */,
+				86ECCAAA22BCB6DE0073FDD9 /* Other */,
+			);
+			path = Exposition;
+			sourceTree = "<group>";
+		};
+		86ECCAA722BCB68B0073FDD9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				86DF48C7209D96290012088A /* Window.swift */,
+				864F45AD20A95702008E6D89 /* FractalPreview.swift */,
+				86ECCAAB22BCB7A50073FDD9 /* Viewport.swift */,
+				86ECCAAD22BCEB5B0073FDD9 /* ViewportOverlay.swift */,
+				864F45AE20A95702008E6D89 /* FractalPreview.xib */,
+				86DF48BD209D92930012088A /* Main.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		86ECCAA822BCB6B20073FDD9 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
 				86DF48B9209D92920012088A /* ViewController.swift */,
 				864F45AB20A95505008E6D89 /* PreviewViewController.swift */,
-				864F45AD20A95702008E6D89 /* FractalPreview.swift */,
-				864F45AE20A95702008E6D89 /* FractalPreview.xib */,
-				864F45A920A95109008E6D89 /* Shader.swift */,
-				86649FE220A9965F00287C81 /* Geometry */,
-				86285AA7209DA201002E0CE3 /* ThreadgroupSize.swift */,
-				86DF48C7209D96290012088A /* Window.swift */,
-				86DF48BB209D92930012088A /* Assets.xcassets */,
-				86DF48BD209D92930012088A /* Main.storyboard */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		86ECCAA922BCB6CD0073FDD9 /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
 				86DF48CA209D970E0012088A /* Shaders.metal */,
+				86285AA7209DA201002E0CE3 /* ThreadgroupSize.swift */,
+				864F45A920A95109008E6D89 /* Shader.swift */,
+			);
+			path = Graphics;
+			sourceTree = "<group>";
+		};
+		86ECCAAA22BCB6DE0073FDD9 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				86DF48BB209D92930012088A /* Assets.xcassets */,
 				86DF48C0209D92930012088A /* Info.plist */,
 				86DF48C1209D92930012088A /* Exposition.entitlements */,
 			);
-			path = Exposition;
+			path = Other;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -211,9 +252,12 @@
 				86649FE020A9965900287C81 /* Vector.swift in Sources */,
 				86DF48CB209D970E0012088A /* Shaders.metal in Sources */,
 				86649FE420A9996800287C81 /* ComplexNumbers.swift in Sources */,
+				86332F8D22B99A5D0000C336 /* Equations.swift in Sources */,
+				86ECCAAE22BCEB5B0073FDD9 /* ViewportOverlay.swift in Sources */,
 				86649FE120A9965900287C81 /* Coordinates.swift in Sources */,
 				86285AA8209DA201002E0CE3 /* ThreadgroupSize.swift in Sources */,
 				86DF48BA209D92920012088A /* ViewController.swift in Sources */,
+				86ECCAAC22BCB7A50073FDD9 /* Viewport.swift in Sources */,
 				86DF48B8209D92920012088A /* AppDelegate.swift in Sources */,
 				86DF48C8209D96290012088A /* Window.swift in Sources */,
 				864F45AC20A95505008E6D89 /* PreviewViewController.swift in Sources */,
@@ -357,7 +401,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Exposition/Info.plist;
+				INFOPLIST_FILE = Exposition/Other/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -377,7 +421,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Exposition/Info.plist;
+				INFOPLIST_FILE = Exposition/Other/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

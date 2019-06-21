@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14810.12" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14810.12"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -634,6 +634,10 @@
                                                 <binding destination="Ab8-7p-rMQ" name="value" keyPath="values.shouldShowCursor" id="CqV-s8-wLt"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="5VI-ML-SAF"/>
+                                        <menuItem title="Show Split View" id="qdI-6E-aJD">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
                                         <menuItem title="Show Sidebar" keyEquivalent="s" id="kIP-vf-haE">
                                             <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
@@ -786,27 +790,22 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Exposition" customModuleProvider="target" sceneMemberID="viewController">
-                    <customView key="view" id="ti1-Cv-H1a" customClass="MetalView" customModule="Exposition" customModuleProvider="target">
+                    <customView key="view" id="ti1-Cv-H1a" customClass="Viewport" customModule="Exposition" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EIP-nV-nVf">
-                                <rect key="frame" x="354" y="20" width="78" height="17"/>
+                                <rect key="frame" x="354" y="20" width="78" height="16"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="Coordinates" id="ckt-2o-MYg">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rBd-5q-B2h">
-                                <rect key="frame" x="215" y="140" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSAddTemplate" id="fMm-AE-2Md"/>
-                            </imageView>
                             <splitView arrangesAllSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TiO-Kj-xkv">
                                 <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                 <subviews>
-                                    <customView fixedFrame="YES" id="57H-oc-dRj">
+                                    <customView fixedFrame="YES" id="57H-oc-dRj" customClass="ViewportOverlay" customModule="Exposition" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="450" height="196"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </customView>
@@ -841,8 +840,8 @@
                     <connections>
                         <outlet property="containerView" destination="V0K-zl-xhi" id="nsq-de-UwP"/>
                         <outlet property="coordinates" destination="EIP-nV-nVf" id="Miv-bX-3in"/>
-                        <outlet property="cursorImage" destination="rBd-5q-B2h" id="DuE-El-Bgx"/>
-                        <outlet property="mtkView" destination="ti1-Cv-H1a" id="Yyn-zD-Dr3"/>
+                        <outlet property="overlay" destination="57H-oc-dRj" id="JBE-ue-dgg"/>
+                        <outlet property="viewport" destination="ti1-Cv-H1a" id="Yyn-zD-Dr3"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -850,7 +849,4 @@
             <point key="canvasLocation" x="75" y="687"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="NSAddTemplate" width="11" height="11"/>
-    </resources>
 </document>
