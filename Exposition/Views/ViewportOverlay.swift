@@ -9,7 +9,7 @@
 import Cocoa
 
 protocol ParameterDelegate: class {
-    func update(position: CGPoint, zoom: CGFloat, origin: CGPoint)
+    func update(parameter: String, position: CGPoint, zoom: CGFloat, origin: CGPoint)
 }
 
 class ViewportOverlay: NSView {
@@ -30,11 +30,10 @@ class ViewportOverlay: NSView {
     public var cursorPosition: CGPoint = .zero  { didSet { notifyDelegate() } }
     public var zoom: CGFloat = 3                { didSet { notifyDelegate() } }
     public var origin: CGPoint = .zero          { didSet { notifyDelegate() } }
+    public var name: String = ""
     
     private func notifyDelegate() {
-        delegate?.update(position: cursorPosition,
-                         zoom: zoom,
-                         origin: origin)
+        delegate?.update(parameter: name, position: cursorPosition, zoom: zoom, origin: origin)
     }
     
     public required init?(coder: NSCoder) {
@@ -69,7 +68,18 @@ class ViewportOverlay: NSView {
     }
     
     override func resize(withOldSuperviewSize oldSize: NSSize) {
+        super.resize(withOldSuperviewSize: oldSize)
+        let size = oldSize
+        let drawableSize = bounds.size
+        let scale = CGSize(width: size.width / drawableSize.width, height: size.height / drawableSize.height)
         
+        cursorPosition.x = cursorPosition.x * scale.width
+        cursorPosition.y = cursorPosition.y * scale.height
+        
+        origin.x *= scale.width
+        origin.y *= scale.height
+        
+        notifyDelegate()
     }
     
     public override func scrollWheel(with event: NSEvent) {

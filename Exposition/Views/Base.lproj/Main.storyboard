@@ -784,28 +784,47 @@
                 </viewController>
                 <customObject id="Tg4-ou-rge" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="1073"/>
+            <point key="canvasLocation" x="75" y="1273"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" customModule="Exposition" customModuleProvider="target" sceneMemberID="viewController">
-                    <customView key="view" id="ti1-Cv-H1a" customClass="Viewport" customModule="Exposition" customModuleProvider="target">
+                    <customView key="view" focusRingType="none" id="ti1-Cv-H1a">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EIP-nV-nVf">
-                                <rect key="frame" x="354" y="20" width="78" height="16"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="Coordinates" id="ckt-2o-MYg">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            <scrollView wantsLayer="YES" focusRingType="none" borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fgg-R8-9LB">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                <clipView key="contentView" focusRingType="none" id="xwb-Ie-hrn">
+                                    <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <collectionView focusRingType="none" allowsEmptySelection="NO" id="3aj-ZG-zxe">
+                                            <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <collectionViewGridLayout key="collectionViewLayout" id="Fxn-ko-IJ1"/>
+                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <outlet property="dataSource" destination="XfG-lQ-9wD" id="Oh8-Iv-3Aj"/>
+                                                <outlet property="delegate" destination="XfG-lQ-9wD" id="laF-lZ-Tw2"/>
+                                            </connections>
+                                        </collectionView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="UwF-WC-9Tn">
+                                    <rect key="frame" x="-100" y="-100" width="233" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="T3E-hb-cqi">
+                                    <rect key="frame" x="433" y="1" width="16" height="298"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
                             <splitView arrangesAllSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TiO-Kj-xkv">
                                 <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                 <subviews>
-                                    <customView fixedFrame="YES" id="57H-oc-dRj" customClass="ViewportOverlay" customModule="Exposition" customModuleProvider="target">
+                                    <customView fixedFrame="YES" id="57H-oc-dRj">
                                         <rect key="frame" x="0.0" y="0.0" width="450" height="196"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </customView>
@@ -813,7 +832,6 @@
                                         <rect key="frame" x="0.0" y="205" width="450" height="95"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <connections>
-                                            <outlet property="nextKeyView" destination="57H-oc-dRj" id="Nvu-n5-9eI"/>
                                             <segue destination="Yxj-PM-deM" kind="embed" id="SeN-8h-g8u"/>
                                         </connections>
                                     </containerView>
@@ -828,25 +846,24 @@
                             </splitView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="fgg-R8-9LB" firstAttribute="top" secondItem="ti1-Cv-H1a" secondAttribute="top" id="1EZ-Zb-cRy"/>
+                            <constraint firstAttribute="trailing" secondItem="fgg-R8-9LB" secondAttribute="trailing" id="2kp-HC-0yB"/>
                             <constraint firstItem="TiO-Kj-xkv" firstAttribute="top" secondItem="ti1-Cv-H1a" secondAttribute="top" id="4VN-1s-gtM"/>
-                            <constraint firstAttribute="bottom" secondItem="EIP-nV-nVf" secondAttribute="bottom" constant="20" symbolic="YES" id="5Cv-gj-kVC"/>
+                            <constraint firstAttribute="bottom" secondItem="fgg-R8-9LB" secondAttribute="bottom" id="6QV-9V-bbg"/>
                             <constraint firstAttribute="trailing" secondItem="TiO-Kj-xkv" secondAttribute="trailing" id="F8L-N4-fA8"/>
                             <constraint firstAttribute="bottom" secondItem="TiO-Kj-xkv" secondAttribute="bottom" id="Qbr-RZ-fg0"/>
                             <constraint firstItem="TiO-Kj-xkv" firstAttribute="leading" secondItem="ti1-Cv-H1a" secondAttribute="leading" id="W7W-Dg-y4B"/>
-                            <constraint firstAttribute="trailing" secondItem="EIP-nV-nVf" secondAttribute="trailing" constant="20" symbolic="YES" id="Xwn-w0-ncN"/>
-                            <constraint firstItem="EIP-nV-nVf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ti1-Cv-H1a" secondAttribute="leading" constant="20" symbolic="YES" id="utK-YR-Oab"/>
+                            <constraint firstItem="fgg-R8-9LB" firstAttribute="leading" secondItem="ti1-Cv-H1a" secondAttribute="leading" id="Ykk-ts-hm3"/>
                         </constraints>
                     </customView>
                     <connections>
                         <outlet property="containerView" destination="V0K-zl-xhi" id="nsq-de-UwP"/>
-                        <outlet property="coordinates" destination="EIP-nV-nVf" id="Miv-bX-3in"/>
-                        <outlet property="overlay" destination="57H-oc-dRj" id="JBE-ue-dgg"/>
-                        <outlet property="viewport" destination="ti1-Cv-H1a" id="Yyn-zD-Dr3"/>
+                        <outlet property="viewportCollectionView" destination="3aj-ZG-zxe" id="Oe8-p6-R1g"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="687"/>
+            <point key="canvasLocation" x="75" y="882"/>
         </scene>
     </scenes>
 </document>

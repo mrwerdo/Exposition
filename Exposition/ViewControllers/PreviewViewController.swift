@@ -10,13 +10,15 @@ import Cocoa
 
 class PreviewViewController: NSViewController, NSCollectionViewDataSource, NSCollectionViewDelegate, NSCollectionViewDelegateFlowLayout {
     
+    static let SelectionDidChange = Notification.Name("CollectionViewDidSelectIndex")
+    
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
         return AppDelegate.shared.metal?.shaders.count ?? 0
     }
     
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         let item = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier("cv"), for: indexPath)
-        if let v = item as? FractalPreview {
+        if let v = item as? ViewportPreviewController {
             v.setIndex(indexPath.item)
         }
         return item
@@ -26,11 +28,11 @@ class PreviewViewController: NSViewController, NSCollectionViewDataSource, NSCol
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        previewList.register(FractalPreview.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier("cv"))
+        previewList.register(ViewportPreviewController.self, forItemWithIdentifier: NSUserInterfaceItemIdentifier("cv"))
     }
     
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
-        let n = Notification(name: Notification.Name("CollectionViewDidSelectIndex"), object: self, userInfo: nil)
+        let n = Notification(name: PreviewViewController.SelectionDidChange, object: self, userInfo: nil)
         NotificationCenter.default.post(n)
     }
 

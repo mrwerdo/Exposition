@@ -188,12 +188,11 @@ inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
 //    return x_n_1;
 }
 
-float4 iterate(Complex Z, Complex C, int maxiters, float escape) {
-    Complex c = C;
+float4 iterate(Complex Z, Complex C1, Complex C2, int maxiters, float escape) {
+    Complex c = C1;
     Complex z = Z;
     for (int i = 0; i < maxiters; i++) {
-        Complex z2 = function(z, c, Z, C);
-        c = (c / C)/2;
+        Complex z2 = function(z, c, Z, C1);
         if (use_escape_iteration) {
             if (z2.length_squared() > escape) return colorForIterationNewton(z2, c, i, maxiters, escape);
         } else {
@@ -213,16 +212,21 @@ kernel void newtonShader(texture2d<float, access::write> output [[texture(0)]],
     uint height = output.get_height();
     if (upos.x > width || upos.y > height) return;
     
-    const device float2& screenPoint = parameters[0];
-    const device float2& origin = parameters[1];
-    const device float2& zoom = parameters[2];
+    const device float2& origin = parameters[0];
+    const device float2& zoom = parameters[1];
+    
+    // These take upon the values of locations in the view.
+    const device float2& parameter1 = parameters[2];
+    const device float2& parameter2 = parameters[3];
     
     float2 uposf = float2(upos.x, upos.y);
     float2 size = float2(width, height);
     float2 o = origin * max(1/size.x, 1/size.y);
+    
     Complex z = ((uposf - size/2) * max(zoom.x/size.x, zoom.y/size.y)) - o;
-    Complex c = (screenPoint - size/2) * max(1/size.x, 1/size.y);
-//    Complex c = (screenPoint - size/2) * max(zoom.x/size.x, zoom.y/size.y);
+    
+    Complex c1 = (parameter1 - size/2) * max(1/size.x, 1/size.y);
+    Complex c2 = (parameter2 - size/2) * max(1/size.x, 1/size.y);
 
-    output.write(iterate(z, c, 100, 70), upos);
+    output.write(iterate(z, c1, c2, 100, 70), upos);
 }

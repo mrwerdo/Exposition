@@ -29,7 +29,7 @@ class Shader {
     var image: NSImage {
         get {
             if _image == nil {
-                _image = makeImage()
+                _image = makeImage(parameters: [CGPoint(x: 256, y: 256), CGPoint(x: 256, y: 256)])
             }
             return _image!
         }
@@ -55,26 +55,28 @@ class Shader {
                        Double((point.y / carSize.height) * comSize.height + comOri.y))
     }
     
-    func initaliseBuffer(cursor: CGPoint, zoom: CGSize, origin: CGPoint) {
-        let buf = buffer.contents().bindMemory(to: Float32.self, capacity: 6)
-        buf[0] = Float32(cursor.x)
-        buf[1] = Float32(cursor.y)
-        buf[2] = Float32(origin.x)
-        buf[3] = Float32(origin.y)
-        buf[4] = Float32(zoom.width)
-        buf[5] = Float32(zoom.height)
+    func initaliseBuffer(parameters: [CGPoint], zoom: CGFloat, origin: CGPoint) {
+        let count = 2 * parameters.count + 2 + 2
+        let buf = buffer.contents().bindMemory(to: Float32.self, capacity: count)
+        
+        let allParameters: [CGPoint] = [origin, CGPoint(x: zoom, y: zoom)] + parameters
+        
+        for (i, p) in allParameters.enumerated() {
+            buf[i * 2] = Float32(p.x)
+            buf[i * 2 + 1] = Float32(p.y)
+        }
     }
     
     func makeImage(size: CGSize = CGSize(width: 512, height: 512),
-                   cursor: CGPoint = CGPoint(x: 384, y: 256),
-                   zoom: CGSize = CGSize(width: 1, height: 1),
+                   parameters: [CGPoint],
+                   zoom: CGFloat = CGFloat(1),
                    origin: CGPoint = CGPoint(x: 0, y: 0)) -> NSImage? {
         
         guard let metal = AppDelegate.shared.metal else {
             fatalError()
         }
         
-        initaliseBuffer(cursor: cursor,
+        initaliseBuffer(parameters: parameters,
                         zoom: zoom,
                         origin: origin
         )
@@ -136,7 +138,7 @@ class Shader {
         }
         
         func shader(iterator: String, usingEscapeIteration: Bool) -> Shader? {
-            guard let buffer = device.makeBuffer(length: 6 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined]) else {
+            guard let buffer = device.makeBuffer(length: 8 * MemoryLayout<Float32>.size, options: [.cpuCacheModeWriteCombined]) else {
                 return nil
             }
             
