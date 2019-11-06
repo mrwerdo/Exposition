@@ -158,7 +158,7 @@ class ViewController: NSViewController, ParameterDelegate, NSCollectionViewDataS
                 case parameters[0]:
                     viewport.parameters = f0()
                 case parameters[1]:
-                    viewport.parameters = f2()
+                    viewport.parameters = f0()
                 default: break
                 }
                 

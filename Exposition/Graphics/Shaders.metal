@@ -69,7 +69,6 @@ public:
     ComplexOp(/, float o) {
         return *this / Complex(o, 0);
     }
-
     
     ComplexOp(^, Complex w) {
         float a = z.x;
@@ -82,6 +81,9 @@ public:
                        r * sin(t));
     }
     
+    inline float arg() const {
+        return atan2(z.y, z.x);
+    }
     
     inline Complex operator - () const {
         return Complex(-z);
@@ -175,7 +177,7 @@ inline Complex df(Complex z) {
     return (log(z) + 1);
 }
 
-inline Complex function(Complex z, Complex c, Complex Z, Complex C) {
+inline Complex function(Complex z, Complex c, Complex Z, Complex C, Complex p) {
     return iterator;
 //    return z - (c*f(z)) / (df(z));
     
@@ -192,7 +194,7 @@ float4 iterate(Complex Z, Complex C1, Complex C2, int maxiters, float escape) {
     Complex c = C1;
     Complex z = Z;
     for (int i = 0; i < maxiters; i++) {
-        Complex z2 = function(z, c, Z, C1);
+        Complex z2 = function(z, c, Z, C1, C2);
         if (use_escape_iteration) {
             if (z2.length_squared() > escape) return colorForIterationNewton(z2, c, i, maxiters, escape);
         } else {
@@ -200,7 +202,7 @@ float4 iterate(Complex Z, Complex C1, Complex C2, int maxiters, float escape) {
         }
         z = z2;
     }
-    return float4(0, 0, 0, 1);
+    return colorForIterationNewton(z, c, 0, maxiters, escape);
 }
 
 

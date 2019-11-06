@@ -1,5 +1,5 @@
 //
-//  Shader.swift
+//  Pipeline.swift
 //  Exposition
 //
 //  Created by Andrew Thompson on 14/5/18.
@@ -155,6 +155,7 @@ class Shader {
         
         return [
             shader(iterator: "z - c * ((((z * z * z) - 1)/(3 * (z * z))))", usingEscapeIteration: true), // cubic zeros
+            shader(iterator: "z - c * (z.pow(3) - 1)/(3 * z.pow(2)) + p", usingEscapeIteration: true), // cubic zeros
             shader(iterator: "z - c * (1/((z*z*z) - 1))/((-3*(z*z))/((z*z*z) - 1))", usingEscapeIteration: true), // log of z power z
             shader(iterator: "z - c * sin(z*z*z - 1)/(cos(z*z*z - 1)*3*(z*z*z))", usingEscapeIteration: true), // log of z power z
             shader(iterator: "z - c * (0.5 * z + 1/z)", usingEscapeIteration: false), // square root zeros
@@ -167,6 +168,7 @@ class Shader {
             shader(iterator: "z - c * log(z^(2*z)) / (log(2*z) + 1)", usingEscapeIteration: true), // log of z power z
             shader(iterator: "z - c * log(z*z*z) * 3 * z", usingEscapeIteration: true), // log of z power z
             shader(iterator: "z - c * log(z*z*z*z) * 4 * z", usingEscapeIteration: true), // log of z power z
+            shader(iterator: "z - c * (((z*z*z) - 1)/e((3*(z*z))/((z*z*z) - 1)))", usingEscapeIteration: true), // log of z power z
             ].compactMap { $0 }
     }
     
